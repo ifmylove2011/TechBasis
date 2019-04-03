@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.timeout.IdleStateEvent;
 
 public class NormalClientHandler extends SimpleChannelInboundHandler<NormalMessage> {
@@ -19,11 +20,18 @@ public class NormalClientHandler extends SimpleChannelInboundHandler<NormalMessa
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		L.d("------active-------"+ctx.channel().remoteAddress().toString());
-		for (int i = 0; i < 100; i++) {
+		L.d(Thread.currentThread().getName());
+		for (int i = 0; i < 21; i++) {
 			String content = "data" + i;
 			ctx.writeAndFlush(new NormalMessage(1, content.length(), content));
 			TimeUnit.MILLISECONDS.sleep(200);
 		}
+	}
+
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		L.d("-----inactive------");
+		L.d(Thread.currentThread().getName());
 	}
 
 	@Override

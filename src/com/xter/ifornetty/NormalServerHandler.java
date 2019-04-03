@@ -29,6 +29,11 @@ public class NormalServerHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		L.d("------inactive-------");
+	}
+
+	@Override
 	public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
 		L.d("-----unreg------");
 	}

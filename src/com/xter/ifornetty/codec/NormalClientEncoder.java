@@ -15,7 +15,6 @@ public class NormalClientEncoder extends MessageToByteEncoder<NormalMessage> {
 
 	@Override
 	protected void encode(ChannelHandlerContext channelHandlerContext, NormalMessage normalMessage, ByteBuf byteBuf) throws Exception {
-		L.d(Thread.currentThread().getName());
 		L.d(normalMessage.toString());
 		byteBuf.writeInt(normalMessage.type);
 		byteBuf.writeInt(normalMessage.length);
