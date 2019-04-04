@@ -15,24 +15,24 @@ public class NormalClientDecoder extends ByteToMessageDecoder {
 
 	@Override
 	protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-		L.d("size="+byteBuf.readableBytes());
-//		if (byteBuf.readableBytes() < 8) {
-//			return;
-//		}
-//		byteBuf.markReaderIndex();
-//		int type = byteBuf.readInt();
-//		int length = byteBuf.readInt();
-//		if (byteBuf.readableBytes() < length) {
-//			byteBuf.resetReaderIndex();
-//			return;
-//		}
-//		String content = (String) byteBuf.readCharSequence(length, charset);
-//		NormalMessage nm = new NormalMessage(type, length, content);
-//		L.d(Thread.currentThread().getName());
-//		L.d(nm.toString());
-//		list.add(nm);
-		byte[] bytes = new byte[byteBuf.readableBytes()];
-		byteBuf.readBytes(bytes);
-		L.d(new String(bytes));
+//		L.d("size="+byteBuf.readableBytes());
+		if (byteBuf.readableBytes() < 8) {
+			return;
+		}
+		byteBuf.markReaderIndex();
+		int type = byteBuf.readInt();
+		int length = byteBuf.readInt();
+		if (byteBuf.readableBytes() < length) {
+			byteBuf.resetReaderIndex();
+			return;
+		}
+		String content = (String) byteBuf.readCharSequence(length, charset);
+		NormalMessage nm = new NormalMessage(type, length, content);
+		L.d(Thread.currentThread().getName());
+		L.d(nm.toString());
+		list.add(nm);
+//		byte[] bytes = new byte[byteBuf.readableBytes()];
+//		byteBuf.readBytes(bytes);
+//		L.d(new String(bytes));
 	}
 }

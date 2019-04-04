@@ -1,7 +1,11 @@
 package com.xter.ifornetty.common;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -12,25 +16,35 @@ public class TCPClient {
 
 	private Bootstrap bootstrap;
 
+	/**
+	 * 连接后的handler，若初始化逻辑较复杂，最好使用继承{@link ChannelInitializer}
+	 */
 	private ChannelHandler handler;
+
+	private ChannelFuture channelFuture;
 
 	private String host;
 	private int port;
 
+	public ChannelFuture getChannelFuture() {
+		return channelFuture;
+	}
+
 	public void connect() {
-		bootstrap.connect();
+		channelFuture = bootstrap.connect();
 	}
 
 	public void shut() {
 		workerLoop.shutdownGracefully();
 	}
 
-	public TCPClient() {
+	private TCPClient() {
 		bootstrap = new Bootstrap();
 	}
 
 	public static class Builder {
 		private TCPClient target = new TCPClient();
+
 
 		public Builder assign(int workerThreads) {
 			target.workerLoop = new NioEventLoopGroup(workerThreads);
@@ -52,6 +66,7 @@ public class TCPClient {
 			target.port = port;
 			return this;
 		}
+
 
 		public TCPClient build() {
 			if (target.workerLoop == null) {

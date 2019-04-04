@@ -13,8 +13,7 @@ public class CommonServer1 {
 				.childHandler(new ChannelInitializer<Channel>() {
 					@Override
 					protected void initChannel(Channel channel) throws Exception {
-//						channel.pipeline().addLast(new LengthFieldBasedFrameDecoder(1024,4,4,-4,8));
-						channel.pipeline().addLast(new LengthFieldBasedFrameDecoder(1024, 4, 4, 0, 8));
+//						channel.pipeline().addLast(new LengthFieldBasedFrameDecoder(1024, 4, 4, 0, 8));
 						channel.pipeline().addLast(new NormalClientDecoder());
 						channel.pipeline().addLast(new NormalServerHandler());
 					}

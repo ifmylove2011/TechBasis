@@ -4,6 +4,7 @@ import com.xter.util.L;
 
 import java.util.concurrent.TimeUnit;
 
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
@@ -26,29 +27,14 @@ public class NormalClientHandler extends SimpleChannelInboundHandler<NormalMessa
 			ctx.writeAndFlush(new NormalMessage(1, content.length(), content));
 			TimeUnit.MILLISECONDS.sleep(200);
 		}
+		ctx.disconnect();
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		L.d("-----inactive------");
-		L.d(Thread.currentThread().getName());
+		L.d("--------"+ctx.channel().isActive());
+
+		ctx.channel().connect(ctx.channel().remoteAddress());
 	}
 
-	@Override
-	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-		if (evt instanceof IdleStateEvent) {
-			IdleStateEvent event = (IdleStateEvent) evt;
-			switch (event.state()) {
-				case WRITER_IDLE:
-					L.d("------write idle-------");
-					break;
-				case READER_IDLE:
-					L.d("------read idle-------");
-					break;
-				case ALL_IDLE:
-					L.d("------all idle-------");
-					break;
-			}
-		}
-	}
 }
