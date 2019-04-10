@@ -21,6 +21,9 @@ public class LinkedHashMapDemo {
 		showMap(map1);
 		System.out.println("-----------------");
 		showMap(map2);
+
+		System.out.println("".getClass().getTypeName());
+		System.out.println(map2.getClass().getTypeName());
 	}
 
 	public static void showMap(Map<Integer, String> map) {
