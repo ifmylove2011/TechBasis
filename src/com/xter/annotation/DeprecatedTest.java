@@ -2,6 +2,8 @@ package com.xter.annotation;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.Arrays;
 
 @Deprecated
 public class DeprecatedTest {
@@ -16,15 +18,29 @@ public class DeprecatedTest {
 
 		Class dt = DeprecatedTest.class;
 
+		//判断类本身是否被Deprecated注解
 		System.out.println("class has Deprecated: " + dt.isAnnotationPresent(Deprecated.class));
 
 		System.out.println("--------------------");
 		System.out.println("method has Deprecated: ");
 		Method[] methods = dt.getDeclaredMethods();
 		for (Method m : methods) {
-			Deprecated deprecated = m.getAnnotation(Deprecated.class);
-			if (deprecated != null) {
-				System.out.println(m.getName());
+			//判断方法是否被Deprecated注解
+			if(m.isAnnotationPresent(Deprecated.class)){
+				Deprecated deprecated = m.getAnnotation(Deprecated.class);
+				if (deprecated != null) {
+					System.out.println(m.getName());
+				}
+			}
+			Parameter[] parameters = m.getParameters();
+			if(parameters!=null&&parameters.length>0){
+				for(Parameter p:parameters){
+					if(p.isAnnotationPresent(Deprecated.class)){
+						Deprecated deprecated = p.getAnnotation(Deprecated.class);
+
+						System.out.println(p.getName());
+					}
+				}
 			}
 		}
 
