@@ -26,7 +26,6 @@ public class CautionTest {
 			//判断方法是否被Caution注解
 			if (m.isAnnotationPresent(Caution.class)) {
 				Caution caution = m.getAnnotation(Caution.class);
-				System.out.println(caution.);
 				System.out.println("    method name is " + m.getName() + ", value1=" + caution.value1() + ", value2=" + caution.value2() + ", value3=" + caution.value3());
 			}
 
