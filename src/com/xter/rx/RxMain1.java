@@ -7,20 +7,19 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
-import io.reactivex.Scheduler;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.Single;
 import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.internal.operators.observable.ObservableGroupBy;
+import io.reactivex.functions.Predicate;
 import io.reactivex.observables.GroupedObservable;
+import io.reactivex.observers.DisposableMaybeObserver;
 import io.reactivex.observers.DisposableObserver;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.observers.DisposableSingleObserver;
 
 public class RxMain1 {
 
@@ -41,7 +40,7 @@ public class RxMain1 {
 
 		useRange().subscribe(new SimpleIntegerObserver());
 
-		useInterval().subscribe(new SimpleLongObserver());
+//		useInterval().subscribe(new SimpleLongObserver());
 		useTimer().subscribe(new SimpleLongObserver());
 
 
@@ -50,9 +49,37 @@ public class RxMain1 {
 		useFlatMap().subscribe(new SimpleStringObserver());
 		useConcatMap().subscribe(new SimpleStringObserver());
 		useSwitchMap().subscribe(new SimpleStringObserver());
-
 		useScan().subscribe(new SimpleIntegerObserver());
+		useCast().subscribe(new SimpleStringObserver());
+
 		useGroupBy().subscribe(new GroupObserver());
+		useWindow().subscribe(new ObservableObserver());
+
+
+		useFilter().subscribe(new SimpleIntegerObserver());
+		useTake().subscribe(new SimpleIntegerObserver());
+		useTakeUntil().subscribe(new SimpleIntegerObserver());
+		useTakeWhile().subscribe(new SimpleIntegerObserver());
+		useTakeLast().subscribe(new SimpleIntegerObserver());
+
+		useFirst().subscribe(new SingleStringObserver());
+		useLast().subscribe(new SingleStringObserver());
+		useFirstElement().subscribe(new MaybeStringObserver());
+		useLastElement().subscribe(new MaybeStringObserver());
+		useElementAt().subscribe(new MaybeStringObserver());
+
+		useSkip().subscribe(new SimpleIntegerObserver());
+		useSkipLast().subscribe(new SimpleIntegerObserver());
+
+		useThrottleFirst().subscribe(new SimpleLongObserver());
+		useThrottleLast().subscribe(new SimpleLongObserver());
+
+		//一些Observable需要延时才能看到效果
+		try {
+			TimeUnit.SECONDS.sleep(10);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -136,7 +163,7 @@ public class RxMain1 {
 	}
 
 	public static Observable<Long> useInterval() {
-		return Observable.interval(2, TimeUnit.SECONDS);
+		return Observable.interval(1, TimeUnit.SECONDS);
 //		return Observable.intervalRange(10,4,1,1, TimeUnit.SECONDS);
 	}
 
@@ -202,8 +229,112 @@ public class RxMain1 {
 			@Override
 			public String apply(Integer integer) throws Exception {
 				return integer % 2 == 0 ? "a" : "b";
+//				return  "b";
 			}
 		});
+	}
+
+	public static Observable<Observable<Long>> useWindow() {
+//		return useInterval().window(4);
+		return useInterval().window(6);
+//		return useInterval().window(2,TimeUnit.SECONDS);
+	}
+
+	public static Observable<String> useCast() {
+		return useFromIterable().cast(String.class);
+	}
+
+	public static Observable<Integer> useFilter() {
+		return useRange().filter(new Predicate<Integer>() {
+			@Override
+			public boolean test(Integer integer) throws Exception {
+				return integer%2==0;
+			}
+		});
+	}
+
+	public static Observable<Integer> useTake() {
+		return useRange().take(3);
+//		return useRange().take(3,TimeUnit.SECONDS);
+	}
+
+	public static Observable<Integer> useTakeUntil() {
+		return useRange().takeUntil(new Predicate<Integer>() {
+			@Override
+			public boolean test(Integer integer) throws Exception {
+				return integer>10;
+			}
+		});
+	}
+
+	public static Observable<Integer> useTakeWhile() {
+		return useRange().takeWhile(new Predicate<Integer>() {
+			@Override
+			public boolean test(Integer integer) throws Exception {
+				return integer<14;
+			}
+		});
+	}
+
+	public static Observable<Integer> useTakeLast() {
+		return useRange().takeLast(3);
+//		return useRange().take(3,TimeUnit.SECONDS);
+	}
+
+	/**
+	 * 取最开始的一个值，若无则取默认值；
+	 * Single类型只能发送数据或【错误error】通知，不能发送【完成complete】通知
+	 * @return  Single
+	 */
+	public static Single<String> useFirst() {
+		return useFromIterable().first("ed");
+	}
+
+	/**
+	 * 取最开始的一个值；
+	 * Maybe类型可发送数据和一条通知，与Observer相似
+	 * @return Maybe
+	 */
+	public static Maybe<String> useFirstElement() {
+		return useFromArray().firstElement();
+	}
+
+	/**
+	 * 取最后一个值，若无则取默认值；
+	 * Single类型只能发送数据或【错误error】通知，不能发送【完成complete】通知
+	 * @return  Single
+	 */
+	public static Single<String> useLast() {
+		return useFromIterable().last("da");
+	}
+
+	/**
+	 * 取最后一个值；
+	 * Maybe类型可发送数据和一条通知，与Observer相似
+	 * @return Maybe
+	 */
+	public static Maybe<String> useLastElement() {
+		return useFromArray().lastElement();
+	}
+
+	public static Maybe<String> useElementAt() {
+		return useFromArray().elementAt(2);
+	}
+
+	public static Observable<Integer> useSkip() {
+		return useRange().skip(2);
+	}
+
+	public static Observable<Integer> useSkipLast() {
+		return useRange().skipLast(2);
+	}
+
+	public static Observable<Long> useThrottleFirst() {
+		return useInterval().throttleFirst(3,TimeUnit.SECONDS);
+	}
+
+	public static Observable<Long> useThrottleLast() {
+		return useInterval().throttleLast(3,TimeUnit.SECONDS);
 	}
 
 	static class SimpleStringObserver extends DisposableObserver<String> {
@@ -306,8 +437,71 @@ public class RxMain1 {
 
 		@Override
 		public void onNext(GroupedObservable<String, Integer> stringIntegerGroupedObservable) {
-			System.out.println(stringIntegerGroupedObservable.getKey());
-			stringIntegerGroupedObservable.subscribe(new SimpleIntegerObserver());
+			System.out.println("group--"+stringIntegerGroupedObservable.getKey());
+//			stringIntegerGroupedObservable.subscribe(new SimpleIntegerObserver());
+		}
+
+		@Override
+		public void onError(Throwable throwable) {
+			throwable.printStackTrace();
+		}
+
+		@Override
+		public void onComplete() {
+			System.out.println("----end----");
+		}
+	}
+
+	static class ObservableObserver extends DisposableObserver<Observable<Long>> {
+		@Override
+		protected void onStart() {
+			System.out.println("----start----");
+		}
+
+		@Override
+		public void onNext(Observable<Long> stringObservable) {
+			System.out.println("window--"+stringObservable.toString());
+		}
+
+		@Override
+		public void onError(Throwable throwable) {
+			throwable.printStackTrace();
+		}
+
+		@Override
+		public void onComplete() {
+			System.out.println("----end----");
+		}
+	}
+
+	static class SingleStringObserver extends DisposableSingleObserver<String> {
+
+		@Override
+		protected void onStart() {
+			System.out.println("----start----");
+		}
+
+		@Override
+		public void onSuccess(String s) {
+			System.out.println(s);
+		}
+
+		@Override
+		public void onError(Throwable throwable) {
+			throwable.printStackTrace();
+		}
+	}
+
+	static class MaybeStringObserver extends DisposableMaybeObserver<String> {
+
+		@Override
+		protected void onStart() {
+			System.out.println("----start----");
+		}
+
+		@Override
+		public void onSuccess(String s) {
+			System.out.println(s);
 		}
 
 		@Override
