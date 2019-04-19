@@ -77,12 +77,12 @@ public class RxMain1 {
 //		useSkip().subscribe(new SimpleIntegerObserver());
 //		useSkipLast().subscribe(new SimpleIntegerObserver());
 ////
-		useThrottleFirst().subscribe(new SimpleLongObserver());
+//		useThrottleFirst().subscribe(new SimpleLongObserver());
 //		useThrottleLast().subscribe(new SimpleLongObserver());
 //		useThrottleWithTimeout().subscribe(new SimpleLongObserver());
 //		useTimeout().subscribe(new SimpleLongObserver());
 
-//		useDistinct().subscribe(new SimpleStringObserver());
+		useDistinct().subscribe(new SimpleStringObserver());
 //		useOfType().subscribe(new SimpleLongObserver());
 
 //		useCombineLatest().subscribe(new SimpleStringObserver());

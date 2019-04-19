@@ -10,6 +10,7 @@ import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.BiPredicate;
 import io.reactivex.functions.BooleanSupplier;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -30,11 +31,11 @@ public class RxMain2 {
 
 //		useConcat();
 
-//		useFilter();
+		useFilter();
 
 //		useTake();
 
-		useThrottle();
+//		useThrottle();
 
 		try {
 			TimeUnit.SECONDS.sleep(20);
@@ -353,17 +354,70 @@ public class RxMain2 {
 //			}
 //		});
 
-		Observable.just(1, 2, 3, 4).filter(new Predicate<Integer>() {
-			@Override
-			public boolean test(Integer integer) throws Exception {
-				return integer % 2 == 0;
-			}
-		}).subscribe(new Consumer<Integer>() {
-			@Override
-			public void accept(Integer integer) throws Exception {
-				System.out.println(integer);
-			}
-		});
+//		Observable.just(1, 2, 3, 4).filter(new Predicate<Integer>() {
+//			@Override
+//			public boolean test(Integer integer) throws Exception {
+//				return integer % 2 == 0;
+//			}
+//		}).subscribe(new Consumer<Integer>() {
+//			@Override
+//			public void accept(Integer integer) throws Exception {
+//				System.out.println(integer);
+//			}
+//		});
+
+//		Observable.just("aa", "bb", "ccc", "dd", "bb").distinct().subscribe(new Consumer<String>() {
+//			@Override
+//			public void accept(String s) throws Exception {
+//				System.out.println(s);
+//			}
+//		});
+
+//		Observable.just("aa", "bb", "ccc", "dd", "bb").distinct(new Function<String, Integer>() {
+//			@Override
+//			public Integer apply(String s) throws Exception {
+//				return s.length();
+//			}
+//		}).subscribe(new Consumer<String>() {
+//			@Override
+//			public void accept(String s) throws Exception {
+//				System.out.println(s);
+//			}
+//		});
+
+//		Observable.just("aa", "bb", "ccc", "dd", "bb").distinctUntilChanged().subscribe(new Consumer<String>() {
+//			@Override
+//			public void accept(String s) throws Exception {
+//				System.out.println(s);
+//			}
+//		});
+
+//		Observable.just("aa", "bb", "ccc", "dd", "bb").distinctUntilChanged(new Function<String, Integer>() {
+//			@Override
+//			public Integer apply(String s) throws Exception {
+//				return s.length();
+//			}
+//		}).subscribe(new Consumer<String>() {
+//			@Override
+//			public void accept(String s) throws Exception {
+//				System.out.println(s);
+//			}
+//		});
+
+//		Observable.just("aa", "bb", "ccc", "dd", "bb").distinctUntilChanged(new BiPredicate<String, String>() {
+//			@Override
+//			public boolean test(String s1, String s2) throws Exception {
+//				System.out.println("s1="+s1+",s2="+s2);
+//				return s1.length() == s2.length();
+//			}
+//		}).subscribe(new Consumer<String>() {
+//			@Override
+//			public void accept(String s) throws Exception {
+//				System.out.println(s);
+//			}
+//		});
+
+
 	}
 
 	public static void useTake() {
@@ -503,8 +557,24 @@ public class RxMain2 {
 	}
 
 	public static void useThrottle() {
-//		Observable.intervalRange(10, 10, 100, 300, TimeUnit.MILLISECONDS)
-//				.sample(400, TimeUnit.MILLISECONDS)
+//		Observable.create(new ObservableOnSubscribe<Long>() {
+//			@Override
+//			public void subscribe(ObservableEmitter<Long> observableEmitter) throws Exception {
+//				observableEmitter.onNext(1L);
+//				TimeUnit.MILLISECONDS.sleep(300);
+//				observableEmitter.onNext(2L);
+//				TimeUnit.MILLISECONDS.sleep(300);
+//				observableEmitter.onNext(3L);
+//				TimeUnit.MILLISECONDS.sleep(500);
+//				observableEmitter.onNext(4L);
+//				TimeUnit.MILLISECONDS.sleep(500);
+//				observableEmitter.onNext(5L);
+//				TimeUnit.MILLISECONDS.sleep(200);
+//				observableEmitter.onNext(6L);
+//				TimeUnit.MILLISECONDS.sleep(500);
+//				observableEmitter.onComplete();
+//			}
+//		}).sample(400, TimeUnit.MILLISECONDS)
 //				.subscribe(new Consumer<Long>() {
 //					@Override
 //					public void accept(Long aLong) throws Exception {
@@ -521,29 +591,30 @@ public class RxMain2 {
 //					}
 //				});
 
-		Observable.create(new ObservableOnSubscribe<Long>() {
-			@Override
-			public void subscribe(ObservableEmitter<Long> observableEmitter) throws Exception {
-				observableEmitter.onNext(1L);
-				TimeUnit.MILLISECONDS.sleep(400);
-				observableEmitter.onNext(2L);
-				TimeUnit.MILLISECONDS.sleep(400);
-				observableEmitter.onNext(3L);
-				TimeUnit.MILLISECONDS.sleep(400);
-				observableEmitter.onNext(4L);
-				TimeUnit.MILLISECONDS.sleep(400);
-				observableEmitter.onNext(5L);
-				TimeUnit.MILLISECONDS.sleep(400);
-				observableEmitter.onNext(6L);
-			}
-		})
-				.debounce(300, TimeUnit.MILLISECONDS)
-				.subscribe(new Consumer<Long>() {
-					@Override
-					public void accept(Long aLong) throws Exception {
-						System.out.println(aLong);
-					}
-				});
+//		Observable.create(new ObservableOnSubscribe<Long>() {
+//			@Override
+//			public void subscribe(ObservableEmitter<Long> observableEmitter) throws Exception {
+//				observableEmitter.onNext(1L);
+//				TimeUnit.MILLISECONDS.sleep(300);
+//				observableEmitter.onNext(2L);
+//				TimeUnit.MILLISECONDS.sleep(300);
+//				observableEmitter.onNext(3L);
+//				TimeUnit.MILLISECONDS.sleep(500);
+//				observableEmitter.onNext(4L);
+//				TimeUnit.MILLISECONDS.sleep(500);
+//				observableEmitter.onNext(5L);
+//				TimeUnit.MILLISECONDS.sleep(200);
+//				observableEmitter.onNext(6L);
+//				TimeUnit.MILLISECONDS.sleep(500);
+//				observableEmitter.onComplete();
+//			}
+//		}).debounce(400, TimeUnit.MILLISECONDS)
+//				.subscribe(new Consumer<Long>() {
+//					@Override
+//					public void accept(Long aLong) throws Exception {
+//						System.out.println(aLong);
+//					}
+//				});
 
 //		Observable.intervalRange(10, 10, 100, 300, TimeUnit.MILLISECONDS)
 //				.throttleWithTimeout(200, TimeUnit.MILLISECONDS)
@@ -562,5 +633,30 @@ public class RxMain2 {
 //						System.out.println(aLong);
 //					}
 //				});
+
+		Observable.create(new ObservableOnSubscribe<Long>() {
+			@Override
+			public void subscribe(ObservableEmitter<Long> observableEmitter) throws Exception {
+				observableEmitter.onNext(1L);
+				TimeUnit.MILLISECONDS.sleep(300);
+				observableEmitter.onNext(2L);
+				TimeUnit.MILLISECONDS.sleep(300);
+				observableEmitter.onNext(3L);
+				TimeUnit.MILLISECONDS.sleep(500);
+				observableEmitter.onNext(4L);
+				TimeUnit.MILLISECONDS.sleep(500);
+				observableEmitter.onNext(5L);
+				TimeUnit.MILLISECONDS.sleep(200);
+				observableEmitter.onNext(6L);
+				TimeUnit.MILLISECONDS.sleep(500);
+				observableEmitter.onComplete();
+			}
+		}).throttleFirst(400, TimeUnit.MILLISECONDS)
+				.subscribe(new Consumer<Long>() {
+					@Override
+					public void accept(Long aLong) throws Exception {
+						System.out.println(aLong);
+					}
+				});
 	}
 }
