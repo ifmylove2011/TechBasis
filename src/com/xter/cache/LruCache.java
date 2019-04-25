@@ -214,6 +214,7 @@ public class LruCache<K, V> {
                 Map.Entry<K, V> toEvict = null;
                 for (Map.Entry<K, V> entry : map.entrySet()) {
                     toEvict = entry;
+                    break;
                 }
                 // END LAYOUTLIB CHANGE
 
