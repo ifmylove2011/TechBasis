@@ -10,8 +10,7 @@ public class ConditionDemoo {
 	Condition condition = lock.newCondition();
 
 	public static void main(String[] args){
-//		new ConditionDemoo().test();
-		System.out.println("testchar".substring(4,6));
+		new ConditionDemoo().test();
 	}
 
 	public void test(){
@@ -39,7 +38,7 @@ public class ConditionDemoo {
 		public void run() {
 			try{
 				lock.lock();
-				System.out.println("~***");
+				System.out.println("*****");
 				TimeUnit.SECONDS.sleep(2);
 				condition.signal();
 			} catch (InterruptedException e) {
