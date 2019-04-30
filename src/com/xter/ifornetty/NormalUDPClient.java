@@ -25,7 +25,7 @@ public class NormalUDPClient {
 					.handler(new NormalUDPClientHandler())
 					;
 
-			bootstrap.bind(0).sync();
+			bootstrap.bind(9999).sync();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {

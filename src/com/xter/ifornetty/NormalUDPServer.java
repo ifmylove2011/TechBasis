@@ -17,7 +17,7 @@ public class NormalUDPServer {
 					.handler(new NormalUDPServerHandler())
 					;
 
-			bootstrap.bind(12305).sync().channel().closeFuture().await();
+			bootstrap.bind(10000).sync().channel().closeFuture().await();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
