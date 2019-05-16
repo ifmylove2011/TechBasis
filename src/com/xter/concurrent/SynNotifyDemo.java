@@ -15,7 +15,7 @@ public class SynNotifyDemo {
 			@Override
 			public void run() {
 				try {
-					for (int i = 0; i < 4; i++) {
+					for (int i = 0; i < 40; i++) {
 						TimeUnit.SECONDS.sleep(2);
 						blockingQueue.put(i + "");
 					}
@@ -44,7 +44,7 @@ public class SynNotifyDemo {
 			@Override
 			public void run() {
 				try {
-					for (int i = 0; i < 4; i++) {
+					for (int i = 0; i < 40; i++) {
 						TimeUnit.SECONDS.sleep(1);
 						blockingQueue.put(i + "");
 					}

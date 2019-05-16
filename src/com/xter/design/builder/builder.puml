@@ -1,0 +1,30 @@
+@startuml
+
+namespace BuilderPattern #lightblue{
+
+
+class Point{
+    - int x
+    - int y
+    - int z
+    - String desc
+}
+
+class PointBuilder{
+    - Point point
+    + void buildX(int x)
+    + void buildY(int y)
+    + void buildZ(int z)
+    + void buildDesc(String desc)
+}
+
+class PointDirector{
+    # PointBuilder builder
+    + void work()
+}
+
+PointBuilder o-left- Point : use
+PointDirector o-left- PointBuilder
+Main -left-- PointDirector : invoke
+}
+@enduml

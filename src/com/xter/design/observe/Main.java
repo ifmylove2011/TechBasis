@@ -11,20 +11,5 @@ public class Main {
 			}
 		});
 		observable.submit("~I'm working~");
-
-		Random random = new Random(23333);
-		System.out.println(random.nextInt(100));
-		System.out.println(random.nextInt(100));
-		System.out.println(random.nextInt(100));
-		System.out.println(random.nextInt(100));
-		System.out.println(random.nextInt(100));
-		System.out.println(random.nextInt(100));
-		System.out.println(random.nextInt());
-		System.out.println(random.nextInt());
-		System.out.println(random.nextInt());
-		System.out.println(random.nextInt());
-		System.out.println(random.nextInt());
-		System.out.println(random.nextInt());
-		System.out.println(random.nextInt());
 	}
 }

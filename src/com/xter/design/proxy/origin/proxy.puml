@@ -1,0 +1,24 @@
+@startuml
+
+namespace ProxyPattern #lightblue{
+
+class Main
+
+interface IBusiness{
+    + void doSomeThing()
+}
+
+class Client{
+    + void doSomeThing()
+}
+
+class ProxyClient{
+    # IBusiness client
+    + void doSomeThing()
+}
+IBusiness <|-- Client
+IBusiness <|-- ProxyClient
+ProxyClient o-- Client
+Main -- ProxyClient : invoke
+}
+@enduml
