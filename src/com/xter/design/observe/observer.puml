@@ -1,0 +1,38 @@
+@startuml
+
+namespace ObserverPattern #lightblue{
+
+
+interface IObserver{
+    + void update(String content)
+}
+
+interface IObservable{
+    + void attach(IObserver observer)
+    + void detach(IObserver observer)
+    + void submit(String content)
+}
+
+class ConcreteObservable{
+    - Vector<IObserver> vector
+    + void attach(IObserver observer)
+    + void detach(IObserver observer)
+    + void submit(String content)
+}
+
+class ObserverA{
+    + void update(String content)
+}
+
+class ObserverB{
+    + void update(String content)
+}
+
+
+IObserver -right-o IObservable : attach
+IObserver <|-- ObserverA
+IObserver <|-- ObserverB
+IObservable <|-- ConcreteObservable
+Main -left-- ConcreteObservable : invoke
+}
+@enduml

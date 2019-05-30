@@ -4,8 +4,10 @@ import com.xter.ifornetty.NormalMessage;
 import com.xter.util.L;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,21 +20,51 @@ public abstract class FunctionsChannelHandler extends ChannelInboundHandlerAdapt
 
 	private Bootstrap bootstrap;
 
-	private NormalMessage heartBeat = new NormalMessage(2, 0, "");
+	private long interval;
+
+	private int maxReconnectTimes;
+
+	private volatile boolean isActive;
+
+	private AtomicInteger counter = new AtomicInteger(0);
+
+	private Channel channel;
+
+	private static final long INTERVAL = 10 * 1000;
+
+	private static final int MAX_TIMES = 3;
 
 	public FunctionsChannelHandler(Bootstrap bootstrap) {
 		this.bootstrap = bootstrap;
+		this.interval = INTERVAL;
+		this.maxReconnectTimes = MAX_TIMES;
+	}
+
+	public FunctionsChannelHandler(Bootstrap bootstrap, long interval) {
+		this.bootstrap = bootstrap;
+		this.interval = interval;
+		this.maxReconnectTimes = MAX_TIMES;
+	}
+
+	public FunctionsChannelHandler(Bootstrap bootstrap, long interval, int maxReconnectTimes) {
+		this.bootstrap = bootstrap;
+		this.interval = interval;
+		this.maxReconnectTimes = maxReconnectTimes;
 	}
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		isActive = true;
+		counter.set(0);
 		ctx.fireChannelActive();
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		L.d(ctx.channel().remoteAddress() + " 连接断开");
-		ctx.executor().schedule(this, 5, TimeUnit.SECONDS);
+		if (isActive)
+			L.d(bootstrap.config().remoteAddress() + " 连接断开");
+		isActive = false;
+		ctx.executor().execute(this);
 	}
 
 	@Override
@@ -42,8 +74,6 @@ public abstract class FunctionsChannelHandler extends ChannelInboundHandlerAdapt
 			switch (event.state()) {
 				case WRITER_IDLE:
 					L.d("------write idle-------");
-//					ctx.writeAndFlush(heartBeat);
-					ctx.disconnect();
 					break;
 				case READER_IDLE:
 					break;
@@ -55,25 +85,21 @@ public abstract class FunctionsChannelHandler extends ChannelInboundHandlerAdapt
 
 	@Override
 	public void run() {
-		L.d("开始重连");
-		ChannelFuture future;
 		if (bootstrap != null) {
-			future = bootstrap.connect();
-			try {
-				future.addListener(new GenericFutureListener<ChannelFuture>() {
+			if (counter.getAndIncrement() < maxReconnectTimes) {
+				L.d("重连第" + counter.get() + "次");
+				bootstrap.connect().addListener(new GenericFutureListener<ChannelFuture>() {
 					@Override
 					public void operationComplete(ChannelFuture f) throws Exception {
 						if (f.isSuccess()) {
 							L.d("重连成功，" + Thread.currentThread().getName());
+							channel = f.channel();
 						} else {
 							L.d("重连失败，" + Thread.currentThread().getName());
 							f.channel().pipeline().fireChannelInactive();
 						}
 					}
 				});
-				future.sync();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
 		}
 

@@ -22,7 +22,7 @@ public class NettyClient {
 						new NormalClientHandler())
 				.build();
 
-		connector.setRemoteAddress("127.0.0.1", 8000);
+		connector.setRemoteAddress("192.168.0.102", 8000);
 		connector.setChannelStateListener(new NettyConnector.IChannelStateListener() {
 			@Override
 			public void onConnectSuccess(Channel channel) {
