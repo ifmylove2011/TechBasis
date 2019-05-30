@@ -30,8 +30,4 @@ public class NormalClientHeartBeatHandler extends ChannelInboundHandlerAdapter {
 	}
 
 
-	@Override
-	public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-		L.d("-------------------------");
-	}
 }

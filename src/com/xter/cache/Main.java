@@ -1,5 +1,9 @@
 package com.xter.cache;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 public class Main {
 	public static void main(String[] args) {
 		LruCache<Integer,String> lruCache = new LruCache<Integer,String>(8){
@@ -28,5 +32,6 @@ public class Main {
 		lruCache.put(1,"1-");
 
 		System.out.println(lruCache.snapshot().toString());
+
 	}
 }

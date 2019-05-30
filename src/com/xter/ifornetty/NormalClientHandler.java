@@ -22,7 +22,7 @@ public class NormalClientHandler extends SimpleChannelInboundHandler<NormalMessa
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		L.d("------active-------"+ctx.channel().remoteAddress().toString());
 		L.d(Thread.currentThread().getName()+","+this.hashCode());
-		for (int i = 0; i < 21; i++) {
+		for (int i = 0; i < 3; i++) {
 			String content = "data" + i;
 			ctx.writeAndFlush(new NormalMessage(1, content.length(), content));
 			TimeUnit.MILLISECONDS.sleep(200);
@@ -36,4 +36,8 @@ public class NormalClientHandler extends SimpleChannelInboundHandler<NormalMessa
 
 	}
 
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		cause.printStackTrace();
+	}
 }
