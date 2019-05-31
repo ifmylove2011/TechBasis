@@ -1,15 +1,18 @@
 package com.xter.design.observe;
 
-import java.util.Random;
 
 public class Main {
 	public static void main(String[] args) {
 		ConcreteObservable observable = new ConcreteObservable();
+		observable.attach(new ObserverA());
+		observable.attach(new ObserverB());
+		observable.submit("~I'm working~");
+
 		observable.attach(new IObserver() {
+			@Override
 			public void update(String content) {
-				System.out.println("receive :" + content);
+				System.out.println("I'm working");
 			}
 		});
-		observable.submit("~I'm working~");
 	}
 }
