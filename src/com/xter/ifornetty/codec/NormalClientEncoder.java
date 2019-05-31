@@ -6,9 +6,12 @@ import com.xter.util.L;
 import java.nio.charset.Charset;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
+
+@ChannelHandler.Sharable
 public class NormalClientEncoder extends MessageToByteEncoder<NormalMessage> {
 
 	private Charset charset = Charset.forName("utf-8");

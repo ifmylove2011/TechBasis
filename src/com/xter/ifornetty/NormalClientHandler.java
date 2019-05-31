@@ -5,11 +5,12 @@ import com.xter.util.L;
 import java.util.concurrent.TimeUnit;
 
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.timeout.IdleStateEvent;
-
+@ChannelHandler.Sharable
 public class NormalClientHandler extends SimpleChannelInboundHandler<NormalMessage> {
 
 	@Override

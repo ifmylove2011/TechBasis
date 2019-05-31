@@ -2,10 +2,11 @@ package com.xter.ifornetty;
 
 import com.xter.util.L;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleStateEvent;
-
+@ChannelHandler.Sharable
 public class NormalClientHeartBeatHandler extends ChannelInboundHandlerAdapter {
 
 	private NormalMessage heartBeat = new NormalMessage(2,0,"");

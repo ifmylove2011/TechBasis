@@ -59,22 +59,17 @@ public abstract class FunctionsChannelHandler extends ChannelInboundHandlerAdapt
 		ChannelFuture future;
 		if (bootstrap != null) {
 			future = bootstrap.connect();
-			try {
-				future.addListener(new GenericFutureListener<ChannelFuture>() {
-					@Override
-					public void operationComplete(ChannelFuture f) throws Exception {
-						if (f.isSuccess()) {
-							L.d("重连成功，" + Thread.currentThread().getName());
-						} else {
-							L.d("重连失败，" + Thread.currentThread().getName());
-							f.channel().pipeline().fireChannelInactive();
-						}
+			future.addListener(new GenericFutureListener<ChannelFuture>() {
+				@Override
+				public void operationComplete(ChannelFuture f) throws Exception {
+					if (f.isSuccess()) {
+						L.d("重连成功，" + Thread.currentThread().getName());
+					} else {
+						L.d("重连失败，" + Thread.currentThread().getName());
+						f.channel().pipeline().fireChannelInactive();
 					}
-				});
-				future.sync();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+				}
+			});
 		}
 
 	}
