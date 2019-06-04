@@ -1,11 +1,14 @@
 package com.xter.concurrent;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class SynNotifyDemo {
 	public static void main(String[] args) {
-		test2();
+//		test1();
+//		test2();
+		test3();
 	}
 
 	public static void test1(){
@@ -51,6 +54,35 @@ public class SynNotifyDemo {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+			}
+		}).start();
+
+		while (true){
+			try {
+				TimeUnit.SECONDS.sleep(2);
+				String item = blockingQueue.take();
+				System.out.println(item);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	public static void test3(){
+		java.util.concurrent.BlockingQueue<String> blockingQueue = new ArrayBlockingQueue<>(2);
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+//				try {
+					for (int i = 0; i < 40; i++) {
+//						TimeUnit.SECONDS.sleep(2);
+						blockingQueue.add(i + "");
+					}
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
 			}
 		}).start();
 

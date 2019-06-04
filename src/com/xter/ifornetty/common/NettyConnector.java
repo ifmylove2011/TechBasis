@@ -230,4 +230,5 @@ public class NettyConnector {
 	public static abstract class HandlerSet extends ChannelInboundHandlerAdapter{
 		public abstract ChannelHandler[] handlers();
 	}
+
 }
