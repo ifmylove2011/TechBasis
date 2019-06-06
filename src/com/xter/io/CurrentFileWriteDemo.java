@@ -12,11 +12,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class CurrentFileWriteDemo {
 
 	public static void main(String[] args) {
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 10; i++) {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					for (int j = 0; j < 100000; j++) {
+					for (int j = 0; j < 50000; j++) {
 						LogFileWriter.getInstance().write(System.currentTimeMillis() + "---------" + Thread.currentThread().getName() + "------" + j + "\r\n");
 					}
 				}

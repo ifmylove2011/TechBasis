@@ -92,7 +92,10 @@ public class LogFileWriter {
 		flushForever();
 	}
 
-
+	/**
+	 * 外部调用入口
+	 * @param content 内容
+	 */
 	public void write(String content) {
 		try {
 			buffer.put(TIME_FORMAT.get().format(System.currentTimeMillis()) + " /" + content);
