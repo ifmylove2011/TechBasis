@@ -9,7 +9,10 @@ import java.util.Arrays;
 public class Main {
 	public static void main(String[] args) {
 		int[] origin = {3,2,5,7,12,1,0};
-		ISortStrategy sortStrategy = new BubbleSort();
+//		ISortStrategy sortStrategy = new BubbleSort();
+//		ISortStrategy sortStrategy = new SelectSort();
+//		ISortStrategy sortStrategy = new InsertSort();
+		ISortStrategy sortStrategy = new QuickSort();
 		sortStrategy.sort(origin);
 		System.out.println(Arrays.toString(origin));
 	}

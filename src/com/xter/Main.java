@@ -10,6 +10,8 @@ public class Main {
 		System.out.println(isPowerOfTwo(1));
 		System.out.println(isPowerOfTwo(2));
 		System.out.println(isPowerOfTwo(8));
+
+		System.out.println(5+2<<2);
 	}
 
 	public static boolean isSuccess(){
