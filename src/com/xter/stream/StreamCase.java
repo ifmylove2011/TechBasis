@@ -1,5 +1,6 @@
 package com.xter.stream;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -10,6 +11,10 @@ import java.util.stream.Collectors;
 public class StreamCase {
 
 	public static void main(String[] args) {
+		test2();
+	}
+
+	public static void test1(){
 		List<String> strings = Arrays.asList("abc", "", "bc", "efg", "abcd","", "jkl");
 		List<String> filtered = strings.stream().filter(string -> !string.isEmpty()).collect(Collectors.toList());
 		System.out.println(filtered);
@@ -35,5 +40,12 @@ public class StreamCase {
 				return value.getBytes().length;
 			}
 		}).forEach(System.out::print);
+	}
+
+	public static void test2(){
+		List<String> someStr = Arrays.asList("a", "b", "c", "e", "a","b");
+		// 获取对应的平方数
+		List<String> toppledList = someStr.stream().distinct().collect(Collectors.toList());
+		System.out.println(toppledList);
 	}
 }
