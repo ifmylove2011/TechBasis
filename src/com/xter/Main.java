@@ -1,7 +1,10 @@
 package com.xter;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import io.netty.buffer.ByteBuf;
@@ -20,6 +23,11 @@ public class Main {
 //
 //		System.out.println(5+2<<2);
 
+		System.out.println(0x0001 ^ 0x0020);
+		System.out.println(0x0001 & 0x0020);
+		System.out.println(0x0001 | 0x0020);
+		System.out.println(0x0001 | 0x0020);
+
 		byte[] bytes = new byte[2];
 		bytes[0] = 1;
 		bytes[1] = 2;
@@ -34,6 +42,7 @@ public class Main {
 		byteBuffer.get(head);
 
 		System.out.println(byteBuffer.array().length);
+
 	}
 
 	public static byte[] reverse(byte[] bytes){
@@ -75,4 +84,17 @@ public class Main {
 	private static boolean isPowerOfTwo(int val) {
 		return (val & -val) == val;
 	}
+
+	public void binary(){
+		List<String> list = new ArrayList<>();
+		list.add("a");
+		list.add("b");
+		list.add("c");
+		list.add("d");
+		if(list.contains("c")){
+			Collections.binarySearch(list,"c");
+		}
+	}
+
+
 }
