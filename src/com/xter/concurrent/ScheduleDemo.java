@@ -1,9 +1,16 @@
 package com.xter.concurrent;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author XTER
@@ -13,7 +20,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class ScheduleDemo {
 	public static void main(String[] args) throws InterruptedException {
-		testRemove2();
+//		testRemove2();
+		testScheduleTimeout();
 	}
 
 	/**
@@ -45,11 +53,50 @@ public class ScheduleDemo {
 		System.out.println("end");
 	}
 
+	public static void testScheduleTimeout(){
+		ScheduledThreadPoolExecutor scheduledExecutorService = new ScheduledThreadPoolExecutor(2);
+		Runnable runnable = new TaskA();
+		RunnableScheduledFuture<?> task1 = (RunnableScheduledFuture<?>) scheduledExecutorService.scheduleWithFixedDelay(runnable, 0, 1, TimeUnit.SECONDS);
+//		Callable<String> callable = new TaskB();
+//		Future<String> task1 = scheduledExecutorService.submit(callable);
+		try {
+			task1.get(3,TimeUnit.SECONDS);
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		} catch (TimeoutException e) {
+			System.out.println();
+		}
+		System.out.println("end");
+	}
+
 	static class Task implements Runnable {
 
 		@Override
 		public void run() {
 			System.out.println(Thread.currentThread().getId());
+		}
+	}
+
+	static class TaskA implements Runnable {
+
+		@Override
+		public void run() {
+
+			try {
+				TimeUnit.SECONDS.sleep(4);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			System.out.println(Thread.currentThread().getId());
+		}
+	}
+
+	static class TaskB implements Callable<String> {
+
+		@Override
+		public String call() throws Exception {
+			TimeUnit.SECONDS.sleep(2);
+			return Thread.currentThread().getName();
 		}
 	}
 }
