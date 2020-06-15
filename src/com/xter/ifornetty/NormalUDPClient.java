@@ -25,7 +25,7 @@ public class NormalUDPClient {
 					.handler(new NormalUDPClientHandler())
 					;
 
-			bootstrap.bind(9999).sync().channel().closeFuture().await();
+			bootstrap.bind(10001).sync().channel().closeFuture().await();
 			System.out.println("~~~~~~~~~");
 		} catch (Exception e) {
 			e.printStackTrace();

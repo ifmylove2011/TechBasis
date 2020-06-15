@@ -27,8 +27,8 @@ public class NormalUDPClientHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		for (int i = 0; i < 10; i++) {
-			ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer("我在广播" + i, Charset.forName("utf-8")), new InetSocketAddress("255.255.255.255", 10000)));
-//			TimeUnit.SECONDS.sleep(1);
+			ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer("我在广播" + i, Charset.forName("utf-8")), new InetSocketAddress("255.255.255.255", 20000)));
+			TimeUnit.SECONDS.sleep(3);
 		}
 	}
 
