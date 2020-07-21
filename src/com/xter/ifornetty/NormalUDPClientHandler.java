@@ -26,10 +26,9 @@ public class NormalUDPClientHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		L.d(ctx.channel().remoteAddress() + "");
 		for (int i = 0; i < 10; i++) {
-			ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer("我在广播" + i, Charset.forName("utf-8")), new InetSocketAddress("255.255.255.255", 12305)));
-			TimeUnit.SECONDS.sleep(2);
+			ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer("我在广播" + i, Charset.forName("utf-8")), new InetSocketAddress("255.255.255.255", 20000)));
+			TimeUnit.SECONDS.sleep(3);
 		}
 	}
 
@@ -40,6 +39,7 @@ public class NormalUDPClientHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+		L.d(ctx.channel().toString());
 		DatagramPacket packet = (DatagramPacket) msg;
 		ByteBuf byteBuf = packet.copy().content();
 		byte[] bytes = new byte[byteBuf.readableBytes()];

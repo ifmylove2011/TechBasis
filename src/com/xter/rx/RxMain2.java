@@ -366,12 +366,12 @@ public class RxMain2 {
 //			}
 //		});
 
-//		Observable.just("aa", "bb", "ccc", "dd", "bb").distinct().subscribe(new Consumer<String>() {
-//			@Override
-//			public void accept(String s) throws Exception {
-//				System.out.println(s);
-//			}
-//		});
+		Observable.just("aa", "bb", "ccc", "dd", "bb").distinct().subscribe(new Consumer<String>() {
+			@Override
+			public void accept(String s) throws Exception {
+				System.out.println(s);
+			}
+		});
 
 //		Observable.just("aa", "bb", "ccc", "dd", "bb").distinct(new Function<String, Integer>() {
 //			@Override

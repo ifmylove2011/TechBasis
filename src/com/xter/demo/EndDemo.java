@@ -1,17 +1,21 @@
 package com.xter.demo;
 
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 问题：为一组定时上报的消息加上开始与结束标志，即当一个消息不再定时上报时，作为其结束标志
+ * @author XTER
+ * @desc 问题：对一组部分定时上报的数据进行分段，输出每段数据的开始与结束标志
+ * @date 2019/10/12
  */
 public class EndDemo {
 
 	public static void main(String[] args) {
-		EndDemo demo = new EndDemo();
 
+//		Determiner determiner = new Determiner("task1");
+		Blocker blocker = new Blocker("task2");
 		try {
 			for (int i = 0; i < 20; i++) {
 				if (i % 4 == 0) {
@@ -19,76 +23,96 @@ public class EndDemo {
 				} else {
 					TimeUnit.MILLISECONDS.sleep(50);
 				}
-				demo.check2(i);
+//				determiner.check(i);
+				blocker.check(i);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private long trackTime = 0;
-	private Thread trackThread;
-	private volatile boolean flag;
-	private volatile int count;
 
-	public void check1(int counter) {
-		count = counter;
-		if (trackThread == null) {
-			trackThread = new Thread(new Runnable() {
-				@Override
-				public void run() {
+	/**
+	 * 利用粒度更小的时间去轮询
+	 */
+	private static class Determiner {
+
+		private long trackTime = 0;
+		private Thread trackThread;
+		private volatile boolean startFlag;
+		private volatile int count;
+
+		Determiner(String taskName) {
+			trackThread = new Thread(() -> {
+				try {
 					while (true) {
-						try {
+						if (startFlag) {
 							TimeUnit.MILLISECONDS.sleep(30);
-							if (flag&& System.currentTimeMillis() - trackTime > 100) {
-								System.out.println("end:"+count);
-								flag = false;
+							if (System.currentTimeMillis() - trackTime > 100) {
+								System.out.println("end:" + count);
+								startFlag = false;
 							}
-						} catch (InterruptedException e) {
-							e.printStackTrace();
 						}
 					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-			});
-			trackThread.start();
+			}, taskName);
 		}
-		if (!flag && System.currentTimeMillis() - trackTime > 100) {
-			System.out.println("start:" + counter);
-			flag = true;
+
+		void check(int counter) {
+			if (!trackThread.isAlive()) {
+				trackThread.start();
+			}
+			count = counter;
+			if (!startFlag && System.currentTimeMillis() - trackTime > 100) {
+				System.out.println("start:" + counter);
+				startFlag = true;
+			}
+			trackTime = System.currentTimeMillis();
 		}
-		trackTime = System.currentTimeMillis();
 	}
 
-	SynchronousQueue<Integer> queue = new SynchronousQueue<>(true);
+	/**
+	 * 利用阻塞队列的特性
+	 */
+	private static class Blocker {
+		private SynchronousQueue<Integer> queue;
+		private Thread trackThread;
+		private volatile boolean startFlag;
 
-	public void check2(int counter) {
-		queue.offer(counter);
-
-		if (trackThread == null) {
-			trackThread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					Integer temp = 0;
+		Blocker(String taskName) {
+			queue = new SynchronousQueue<>(true);
+			trackThread = new Thread(() -> {
+				try {
+					Integer temp;
 					int end = 0;
 					while (true) {
-						try {
-							temp = queue.poll(100,TimeUnit.MILLISECONDS);
-							if(temp==null){
-								System.out.println("end:"+end);
-							}else{
-								end = temp.intValue();
+						if (startFlag) {
+							temp = queue.poll(150, TimeUnit.MILLISECONDS);
+							if (temp == null) {
+								System.out.println("end:" + end);
+								startFlag = false;
+							} else {
+								end = temp;
 							}
-						} catch (InterruptedException e) {
-							e.printStackTrace();
 						}
 					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-			});
-			trackThread.start();
+			}, taskName);
 		}
-		if ( System.currentTimeMillis() - trackTime > 100) {
-			System.out.println("start:" + counter);
+
+		void check(int counter) {
+			if (!trackThread.isAlive()) {
+				trackThread.start();
+			}
+			if (!startFlag && queue.isEmpty()) {
+				System.out.println("start:"+counter);
+				startFlag = true;
+			}
+			queue.offer(counter);
 		}
-		trackTime = System.currentTimeMillis();
 	}
 }

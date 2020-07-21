@@ -10,5 +10,21 @@ public class Main {
 		DBM dbm = new DBM();
 		IDBM idbm = (IDBM) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{IDBM.class}, new DBMProxyHandler<>(dbm));
 		idbm.quest();
+
+		System.out.println(just(1));
+	}
+
+	public static boolean just(int num){
+		return isOne(num)||isTwo(num);
+	}
+
+	public static boolean isOne(int num){
+		System.out.println("isone");
+		return num ==1;
+	}
+
+	public static boolean isTwo(int num){
+		System.out.println("istwo");
+		return num ==2;
 	}
 }

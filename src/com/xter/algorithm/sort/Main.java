@@ -1,6 +1,8 @@
 package com.xter.algorithm.sort;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author XTER
@@ -12,8 +14,11 @@ public class Main {
 //		ISortStrategy sortStrategy = new BubbleSort();
 //		ISortStrategy sortStrategy = new SelectSort();
 //		ISortStrategy sortStrategy = new InsertSort();
-		ISortStrategy sortStrategy = new QuickSort();
-		sortStrategy.sort(origin);
-		System.out.println(Arrays.toString(origin));
+		String s = Pattern.compile("e".toString(), Pattern.LITERAL).matcher(
+				"abcdeeef").replaceAll(Matcher.quoteReplacement("1".toString()));
+//		ISortStrategy sortStrategy = new QuickSort();
+//		sortStrategy.sort(origin);
+//		System.out.println(Arrays.toString(origin));
+		System.out.println(s);
 	}
 }
