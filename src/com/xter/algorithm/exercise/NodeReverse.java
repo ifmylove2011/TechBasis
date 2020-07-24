@@ -1,4 +1,4 @@
-package com.xter.exercise;
+package com.xter.algorithm.exercise;
 
 import com.xter.datastructure.Node;
 

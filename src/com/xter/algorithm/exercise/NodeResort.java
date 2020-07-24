@@ -1,4 +1,4 @@
-package com.xter.exercise;
+package com.xter.algorithm.exercise;
 
 import com.xter.datastructure.Node;
 
@@ -22,7 +22,7 @@ public class NodeResort {
 
 		right = reverse(right);
 		//合并
-		Node result = combineNode(left, right);
+		Node result = combineNode1(left, right);
 		while (result.next != null) {
 			result = result.next;
 			System.out.println(result);
@@ -30,7 +30,7 @@ public class NodeResort {
 	}
 
 	/**
-	 * 本质是将right各个结点间隔插入left中
+	 * 本质是将right各个结点间隔插入left中，先左后右
 	 *
 	 * @param left  带头的结点
 	 * @param right 不带头的结点
@@ -45,6 +45,29 @@ public class NodeResort {
 			tmpR = right.next;
 			leftTmp.next = right;
 			right.next = tmpL;
+			right = tmpR;
+			leftTmp = tmpL;
+		}
+		return left;
+	}
+
+	/**
+	 * 本质是将right各个结点间隔插入left中，先右后左
+	 *
+	 * @param left  带头的结点
+	 * @param right 不带头的结点
+	 * @return 链表
+	 */
+	private static Node combineNode1(Node left, Node right) {
+		Node leftTmp = left.next;
+		Node tmpL;
+		Node tmpR;
+		left.next = right;
+		while (leftTmp != null) {
+			tmpL = leftTmp.next;
+			tmpR = right.next;
+			right.next = leftTmp;
+			leftTmp.next = tmpR;
 			right = tmpR;
 			leftTmp = tmpL;
 		}
