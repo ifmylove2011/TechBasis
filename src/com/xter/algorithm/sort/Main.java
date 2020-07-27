@@ -10,15 +10,19 @@ import java.util.regex.Pattern;
  */
 public class Main {
 	public static void main(String[] args) {
-		int[] origin = {3,2,5,7,12,1,0};
+		int[] origin = {5, 3, 2, 12, 7, 1, 0, 13, 7, 9};
 //		ISortStrategy sortStrategy = new BubbleSort();
 //		ISortStrategy sortStrategy = new SelectSort();
 //		ISortStrategy sortStrategy = new InsertSort();
-		String s = Pattern.compile("e".toString(), Pattern.LITERAL).matcher(
-				"abcdeeef").replaceAll(Matcher.quoteReplacement("1".toString()));
-//		ISortStrategy sortStrategy = new QuickSort();
-//		sortStrategy.sort(origin);
-//		System.out.println(Arrays.toString(origin));
-		System.out.println(s);
+		ISortStrategy sortStrategy = new QuickSort();
+//		ISortStrategy sortStrategy = new ShellSort();
+//		ISortStrategy sortStrategy = new HeapSort();
+//		ISortStrategy sortStrategy = new MergeSort();
+		sortStrategy.sort(origin);
+		System.out.println(Arrays.toString(origin));
+	}
+
+	public static void exch(int i,int j){
+		System.out.println(i+","+j);
 	}
 }

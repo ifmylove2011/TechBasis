@@ -15,11 +15,11 @@ public class NodeReverseNear {
 		Node origin = generateNode();
 
 //		nearReverse(origin);
-		groupReverse(origin, 3);
-//		while (origin.next != null) {
-//			System.out.println(origin.next);
-//			origin = origin.next;
-//		}
+		Node result = groupReverse(origin, 4);
+		while (result != null) {
+			System.out.println(result);
+			result = result.next;
+		}
 	}
 
 	public static void nearReverse(Node head) {
@@ -42,25 +42,42 @@ public class NodeReverseNear {
 		}
 	}
 
-	public static void groupReverse(Node head, int k) {
-		Node start = head;
+	public static Node groupReverse(Node head, int k) {
+		Node start = head.next;
 		Node result = null;
-		Node tmp = start;
-		Node end = null;
+		Node tmp = null;
+		Node nextStart = null;
+		Node resultNode = null;
 		while (start != null) {
 			tmp = start;
-			for (int i = 0; i < k; i++) {
+			for (int i = 1; i < k; i++) {
 				if (tmp != null) {
 					tmp = tmp.next;
 				} else {
-					return;
+					resultNode.next = start;
+					return result;
 				}
 			}
 
+			nextStart = tmp.next;
+			tmp.next = null;
 			Node r = reverse(start);
-			start = tmp.next;
-			tmp.next= null;
+
+			if (result == null) {
+				result = r;
+				resultNode = result.next;
+				while (resultNode.next!=null){
+					resultNode = resultNode.next;
+				}
+			}else{
+				resultNode.next = r;
+				while (resultNode.next!=null){
+					resultNode = resultNode.next;
+				}
+			}
+			start = nextStart;
 		}
+		return result;
 	}
 
 	/**
