@@ -13,9 +13,9 @@ public class MergeSort implements ISortStrategy {
 			aux[i] = origin[i];
 		}
 
-//		mergeSort(origin, 0, size - 1);
-		mergeSortB(origin);
-//		merge(new int[]{3,5,2},0,1,2);
+		mergeSort(origin, 0, size - 1);
+//		mergeSortB(origin);
+//		merge(new int[]{2,4,5,7,1,3,8},0,3,6);
 	}
 
 	private void mergeSort(int[] src, int low, int high) {
@@ -41,8 +41,8 @@ public class MergeSort implements ISortStrategy {
 	}
 
 	private void merge(int[] src, int low, int mid, int high) {
-//		System.out.println("low:" + low + ",mid:" + mid + ",high:" + high);
-//		System.out.println("前:" + Arrays.toString(src));
+		System.out.println("low:" + low + ",mid:" + mid + ",high:" + high);
+		System.out.println("前:" + Arrays.toString(src));
 		for (int i = low; i <= high; i++) {
 			aux[i] = src[i];
 		}
@@ -58,7 +58,7 @@ public class MergeSort implements ISortStrategy {
 				src[k] = aux[i++];
 			}
 		}
-//		System.out.println("后:" + Arrays.toString(src));
+		System.out.println("后:" + Arrays.toString(src));
 	}
 
 }
