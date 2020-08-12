@@ -3,12 +3,10 @@ package com.xter.io;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author XTER
@@ -17,8 +15,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 描述:
  */
 public class AudioIntervalChecker {
-
-	private int mSilentSeconds;
 
 	private static final int MAX_SECONDS = 5;
 
@@ -31,7 +27,15 @@ public class AudioIntervalChecker {
 	 */
 	private static final int MIN_SIZE = 16 * 1024 * 10 * 2;
 
+	private static final int THRESOLD = 80;
+
+	/**
+	 * 累积数据
+	 */
 	private ByteBuffer mByteBuffer;
+
+	private int mFrameIndex = 1;
+	private ArrayList<Integer> mDbArray;
 
 	private static class Holder {
 		private static AudioIntervalChecker INSTANCE = new AudioIntervalChecker();
@@ -43,138 +47,148 @@ public class AudioIntervalChecker {
 
 	private AudioIntervalChecker() {
 		mByteBuffer = ByteBuffer.allocate(MAX_SIZE);
+		mDbArray = new ArrayList<>();
 	}
 
 	public static void main(String[] args) {
-//		File file = new File("E:\\studying\\log\\bbb.pcm");
-		File file = new File("E:\\studying\\log\\16k_10.pcm");
+		System.out.println("最大标准db:" + (20 * Math.log10(Short.MAX_VALUE)));
+//		File file = new File("E:\\studying\\log\\893.pcm");
+		File file = new File("E:\\studying\\log\\533.pcm");
 		try {
 			FileInputStream fis = new FileInputStream(file);
-			byte[] buffer = new byte[44100];
+			byte[] buffer = new byte[32 * 1024 / 2];
 			while (fis.read(buffer) != -1) {
+				System.out.println(AudioIntervalChecker.getInstance().calculateVolume(buffer, 16));
+//				if (AudioIntervalChecker.getInstance().checkFrame(buffer, 2)) {
+//					System.out.println("~~~~~~~");
+//				}
 //				System.out.println(AudioIntervalChecker.getInstance().calculateVolume(buffer, 16));
-				System.out.println(AudioIntervalChecker.getInstance().checkSegment(buffer, 16000, 1, 16, 5));
+//				System.out.println(AudioIntervalChecker.getInstance().checkFrame(buffer, 16 * 1024, 1, 16, 2, 2));
 			}
-//			System.out.println(Arrays.toString(buffer));
-			System.out.println(AudioIntervalChecker.getInstance().checkEntire(buffer, 44100, 1, 16, MAX_SECONDS));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+//		byte a = 0x0f;
+//		byte b = 0x23;
+//		short result = bytesToShort(a,b);
+//		System.out.println(Integer.toHexString(result));
+	}
 
+
+	public synchronized boolean checkFrame(byte[] data, int maxDelay) {
+		return checkFrame(data, 16 * 1024, 1, 16, maxDelay, 2);
 	}
 
 	/**
-	 * 累积数据，检查累积的数据是否可视为录入完成
+	 * 检测当前是否已经满足maxDelay未达到阈值
 	 *
-	 * @param data       音频数据
-	 * @param rate       采样率
-	 * @param channelNum 声道数
-	 * @param bit        位深
-	 * @param maxDelay   最大无输入时间
-	 * @return 是否视为录入完成
+	 * @param data       输入pcm音频数据
+	 * @param rate       采样频率，这里传1024的倍数，以便与文件大小符合
+	 * @param channelNum 通道数，单声道为1，立体声为2
+	 * @param bit        位深，pcm一般为8或16
+	 * @param maxDelay   最大延时，单位为秒
+	 * @param freq    频率，一秒数据分为几段
+	 * @return bool
 	 */
-	public synchronized boolean checkSegment(byte[] data, int rate, int channelNum, int bit, int maxDelay) {
-		if (mByteBuffer.remaining() == 0) {
-			mByteBuffer.mark();
-		}
+	public synchronized boolean checkFrame(byte[] data, int rate, int channelNum, int bit, int maxDelay, int freq) {
+		boolean result = false;
+		int frameSize = rate * channelNum * bit / 8;
+		int bufferSize = Math.max(frameSize / freq, data.length);
 		mByteBuffer.put(data);
-		mByteBuffer.flip();
-		int size = mByteBuffer.remaining();
-		byte[] buffer = new byte[size];
-		mByteBuffer.get(buffer);
-		boolean should = checkEntire(buffer, rate, channelNum, bit, maxDelay);
-		if (!should) {
-			mByteBuffer.reset();
+		if (mByteBuffer.position() >= bufferSize * mFrameIndex) {
+			int position = mByteBuffer.position();
+			mByteBuffer.flip();
+			byte[] buffer = new byte[bufferSize];
+			mByteBuffer.position(bufferSize * (mFrameIndex - 1));
+			mByteBuffer.get(buffer);
+			int db = calculateVolume(buffer, bit);
+			System.out.println("db:" + db);
+			mDbArray.add(db);
+			result = checkContinous(maxDelay, freq);
+			mByteBuffer.position(position);
+			mByteBuffer.limit(mByteBuffer.capacity());
+			mFrameIndex++;
 		}
-		return should;
+		//当前若数据满足，则复位
+		if (result) {
+			mByteBuffer.position(0);
+			mDbArray.clear();
+			mFrameIndex = 1;
+		}
+		return result;
 	}
 
 	/**
-	 * 检查整段音频，若超出一定时间音频无输入，则视为已经录入完成
+	 * 是否连续
 	 *
-	 * @param data       音频数据
-	 * @param rate       采样率
-	 * @param channelNum 声道数
-	 * @param bit        位深
-	 * @param maxDelay   最大无输入时间
-	 * @return 是否视为录入完成
+	 * @param maxDelay 最大延时，单位为秒
+	 * @param freq     频率，每秒几次
+	 * @return bool
 	 */
-	public synchronized boolean checkEntire(byte[] data, int rate, int channelNum, int bit, int maxDelay) {
-		ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-		int bufferSize = rate * channelNum * bit / 8;
-		if (bufferSize * maxDelay > data.length) {
+	private synchronized boolean checkContinous(int maxDelay, int freq) {
+		int thresold = maxDelay * freq;
+		if (mDbArray.size() < thresold) {
 			return false;
 		}
-		byte[] buffer = new byte[bufferSize];
-		byteBuffer.get(buffer);
-		if (calculateVolume(buffer, bit) == 0) {
-			mSilentSeconds++;
-			if (mSilentSeconds >= maxDelay) {
-				mSilentSeconds = 0;
-				return true;
+		int counter = 0;
+		for (int db : mDbArray) {
+			if (db < THRESOLD) {
+				counter++;
+			} else {
+				counter = 0;
 			}
-		} else {
-			mSilentSeconds = 0;
 		}
-		return false;
+		return counter >= thresold;
 	}
 
+	/**
+	 * 计算输入数据段的db值，按公式应该为20*Math.log10(当前振幅值/最大振幅值)；
+	 * 位深为16bit，则代表两个字节表示一个音量采集单位；
+	 * 此处用平方和平均值进行计算；
+	 *
+	 * @param data 输入pcm音频数据
+	 * @param bit  位深，8或16
+	 * @return 当前分贝值
+	 */
 	private int calculateVolume(byte[] data, int bit) {
-		int[] var3 = null;
-		int var4 = data.length;
-		int var2;
+		int[] newBuffer = null;
+		int len = data.length;
+		int index;
+
+		//排列
 		if (bit == 8) {
-			var3 = new int[var4];
-			for (var2 = 0; var2 < var4; ++var2) {
-				var3[var2] = data[var2];
+			newBuffer = new int[len];
+			for (index = 0; index < len; ++index) {
+				newBuffer[index] = data[index];
 			}
 		} else if (bit == 16) {
-			var3 = new int[var4 / 2];
-			for (var2 = 0; var2 < var4 / 2; ++var2) {
-				byte var5 = data[var2 * 2];
-				byte var6 = data[var2 * 2 + 1];
-				int var13;
-				if (var5 < 0) {
-					var13 = var5 + 256;
-				} else {
-					var13 = var5;
-				}
-				short var7 = (short) (var13 + 0);
-				if (var6 < 0) {
-					var13 = var6 + 256;
-				} else {
-					var13 = var6;
-				}
-				var3[var2] = (short) (var7 + (var13 << 8));
+			newBuffer = new int[len / 2];
+			for (index = 0; index < len / 2; ++index) {
+				byte byteH= data[index * 2];
+				byte byteL = data[index * 2 + 1];
+				newBuffer[index] = bytesToShort(byteH, byteL);
 			}
 		}
-
-		int[] var8 = var3;
-		if (var3 != null && var3.length != 0) {
-			float var10 = 0.0F;
-			for (int var11 = 0; var11 < var8.length; ++var11) {
-				var10 += (float) (var8[var11] * var8[var11]);
+		//平方和求平均值
+		if (newBuffer != null && newBuffer.length != 0) {
+			float avg = 0.0F;
+			for (int i = 0; i < newBuffer.length; ++i) {
+				avg += (float) (newBuffer[i] * newBuffer[i]);
 			}
-			var10 /= (float) var8.length;
-			float var12 = 0.0F;
-			for (var4 = 0; var4 < var8.length; ++var4) {
-				var12 += (float) var8[var4];
-			}
-			var12 /= (float) var8.length;
-			var4 = (int) (Math.pow(2.0D, (double) (bit - 1)) - 1.0D);
-			double var14 = Math.sqrt((double) (var10 - var12 * var12));
-			int var9;
-			if ((var9 = (int) (10.0D * Math.log10(var14 * 10.0D * Math.sqrt(2.0D) / (double) var4 + 1.0D))) < 0) {
-				var9 = 0;
-			}
-			if (var9 > 10) {
-				var9 = 10;
-			}
-			return var9;
+			avg /= (float) newBuffer.length;
+			int db = (int) (10.0D * Math.log10(avg + 1));
+			return db;
 		} else {
 			return 0;
 		}
+	}
+
+	private static short bytesToShort(byte byteH, byte byteL) {
+		short temp = 0;
+		temp += (byteL & 0xFF);
+		temp += (byteH & 0xFF) << 8;
+		return temp;
 	}
 }
