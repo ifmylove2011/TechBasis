@@ -20,9 +20,6 @@ public class SelectSort implements ISortStrategy {
 					k = j;
 				}
 			}
-			if (k == i) {
-				break;
-			}
 			int temp = origin[i];
 			origin[i] = origin[k];
 			origin[k] = temp;

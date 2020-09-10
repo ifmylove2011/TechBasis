@@ -23,6 +23,11 @@ public class Main {
 //
 //		System.out.println(5+2<<2);
 
+		Integer a = 1000, b = 1000;
+		System.out.println(a == b);
+		Integer c = 100, d = 100;
+		System.out.println(c == d);
+
 		System.out.println(0x0001 ^ 0x0020);
 		System.out.println(0x0001 & 0x0020);
 		System.out.println(0x0001 | 0x0020);

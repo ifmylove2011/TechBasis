@@ -10,8 +10,8 @@ public class QuickSort implements ISortStrategy {
 
 	@Override
 	public void sort(int[] origin) {
-//		part(origin, 0, origin.length - 1);
-		quick3sort(origin, 0, origin.length - 1);
+		part(origin, 0, origin.length - 1);
+//		quick3sort(origin, 0, origin.length - 1);
 	}
 
 	private void part(int[] array, int left, int right) {
