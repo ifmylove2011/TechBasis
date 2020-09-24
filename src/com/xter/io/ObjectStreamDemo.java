@@ -39,6 +39,7 @@ public class ObjectStreamDemo {
 //
 //		List<TimerCmd> list = (List<TimerCmd>) read();
 //		System.out.println(list.toString());
+
 	}
 
 //	private static void write(Object o){
