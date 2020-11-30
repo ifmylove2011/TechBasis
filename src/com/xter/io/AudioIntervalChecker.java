@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @author XTER
  * 项目名称: TechBasis
  * 创建时间: 2020/8/5
- * 描述:
+ * 描述:检测一段音频的无输入时间段是否超过某个阈值
  */
 public class AudioIntervalChecker {
 
@@ -47,16 +47,16 @@ public class AudioIntervalChecker {
 
 	public static void main(String[] args) {
 //		File file = new File("E:\\studying\\log\\bbb.pcm");
-		File file = new File("E:\\studying\\log\\16k_10.pcm");
+		File file = new File("E:\\studying\\test\\1234.m4a");
 		try {
 			FileInputStream fis = new FileInputStream(file);
-			byte[] buffer = new byte[44100];
+			byte[] buffer = new byte[24*1024];
 			while (fis.read(buffer) != -1) {
 //				System.out.println(AudioIntervalChecker.getInstance().calculateVolume(buffer, 16));
-				System.out.println(AudioIntervalChecker.getInstance().checkSegment(buffer, 16000, 1, 16, 5));
+				System.out.println(AudioIntervalChecker.getInstance().checkSegment(buffer, 12000, 1, 16, 5));
 			}
 //			System.out.println(Arrays.toString(buffer));
-			System.out.println(AudioIntervalChecker.getInstance().checkEntire(buffer, 44100, 1, 16, MAX_SECONDS));
+//			System.out.println(AudioIntervalChecker.getInstance().checkEntire(buffer, 44100, 1, 16, MAX_SECONDS));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -76,17 +76,17 @@ public class AudioIntervalChecker {
 	 * @return 是否视为录入完成
 	 */
 	public synchronized boolean checkSegment(byte[] data, int rate, int channelNum, int bit, int maxDelay) {
-		if (mByteBuffer.remaining() == 0) {
-			mByteBuffer.mark();
-		}
 		mByteBuffer.put(data);
 		mByteBuffer.flip();
+//		mByteBuffer.mark();
 		int size = mByteBuffer.remaining();
+		System.out.println("size:"+size);
 		byte[] buffer = new byte[size];
 		mByteBuffer.get(buffer);
 		boolean should = checkEntire(buffer, rate, channelNum, bit, maxDelay);
 		if (!should) {
-			mByteBuffer.reset();
+			mByteBuffer.limit(mByteBuffer.capacity());
+			mByteBuffer.position(size);
 		}
 		return should;
 	}
@@ -172,8 +172,10 @@ public class AudioIntervalChecker {
 			if (var9 > 10) {
 				var9 = 10;
 			}
+			System.out.println(var9);
 			return var9;
 		} else {
+			System.out.println("0");
 			return 0;
 		}
 	}
