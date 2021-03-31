@@ -22,7 +22,8 @@ public class Main {
 //		System.out.println(isPowerOfTwo(8));
 //
 //		System.out.println(5+2<<2);
-
+		int value = Integer.parseInt("14");
+		System.out.println(value);
 		Integer a = 1000, b = 1000;
 		System.out.println(a == b);
 		Integer c = 100, d = 100;

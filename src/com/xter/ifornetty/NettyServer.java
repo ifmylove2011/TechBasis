@@ -24,11 +24,12 @@ public class NettyServer {
 					.childOption(ChannelOption.TCP_NODELAY,true)
 					.childHandler(new ChannelInitializer<Channel>() {
 						protected void initChannel(Channel ch) {
+							L.d(ch.toString());
 							ch.pipeline().addLast(new NormalClientDecoder());
 							ch.pipeline().addLast(new NormalServerHandler());
 						}
 					});
-			serverBootstrap.localAddress(8000);
+			serverBootstrap.localAddress(8899);
 
 			ChannelFuture channelFuture = serverBootstrap.bind();
 			L.d("done?");

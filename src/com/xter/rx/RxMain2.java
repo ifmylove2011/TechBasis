@@ -31,11 +31,11 @@ public class RxMain2 {
 
 //		useConcat();
 
-		useFilter();
+//		useFilter();
 
 //		useTake();
 
-//		useThrottle();
+		useThrottle();
 
 		try {
 			TimeUnit.SECONDS.sleep(20);
@@ -634,29 +634,23 @@ public class RxMain2 {
 //					}
 //				});
 
-		Observable.create(new ObservableOnSubscribe<Long>() {
+		Observable.create(new ObservableOnSubscribe<Integer>() {
 			@Override
-			public void subscribe(ObservableEmitter<Long> observableEmitter) throws Exception {
-				observableEmitter.onNext(1L);
-				TimeUnit.MILLISECONDS.sleep(300);
-				observableEmitter.onNext(2L);
-				TimeUnit.MILLISECONDS.sleep(300);
-				observableEmitter.onNext(3L);
-				TimeUnit.MILLISECONDS.sleep(500);
-				observableEmitter.onNext(4L);
-				TimeUnit.MILLISECONDS.sleep(500);
-				observableEmitter.onNext(5L);
-				TimeUnit.MILLISECONDS.sleep(200);
-				observableEmitter.onNext(6L);
-				TimeUnit.MILLISECONDS.sleep(500);
+			public void subscribe(ObservableEmitter<Integer> observableEmitter) throws Exception {
+				for (int i = 1; i < 7; i++) {
+					observableEmitter.onNext(i);
+					TimeUnit.MILLISECONDS.sleep(300);
+				}
 				observableEmitter.onComplete();
 			}
-		}).throttleFirst(400, TimeUnit.MILLISECONDS)
-				.subscribe(new Consumer<Long>() {
+		}).throttleLast(400, TimeUnit.MILLISECONDS)
+				.subscribe(new Consumer<Integer>() {
 					@Override
-					public void accept(Long aLong) throws Exception {
-						System.out.println(aLong);
+					public void accept(Integer num) throws Exception {
+						System.out.println(num);
 					}
 				});
+
+
 	}
 }

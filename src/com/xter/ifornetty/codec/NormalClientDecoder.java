@@ -15,7 +15,7 @@ public class NormalClientDecoder extends ByteToMessageDecoder {
 
 	@Override
 	protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-//		L.d("size="+byteBuf.readableBytes());
+		L.d("size="+byteBuf.readableBytes());
 		if (byteBuf.readableBytes() < 8) {
 			return;
 		}

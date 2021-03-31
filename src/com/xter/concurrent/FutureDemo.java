@@ -34,6 +34,7 @@ public class FutureDemo {
 		FutureTask<ResultA> taskA2 = new FutureTask<>(getA2);
 		new Thread(taskA2).start();
 
+
 		if(!taskA1.isDone()||!taskA2.isDone()){
 			L.d("尚未就绪");
 		}
