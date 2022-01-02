@@ -1,9 +1,9 @@
 package com.xter.jsoup;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.io.IOException;
+//import org.jsoup.Jsoup;
+//import org.jsoup.nodes.Document;
+//
+//import java.io.IOException;
 
 /**
  * @author XTER
@@ -24,7 +24,7 @@ public class FirstStudy {
 	}
 
 	public static void demo(){
-			Document doc = Jsoup.parse(SY30_1);
+//			Document doc = Jsoup.parse(SY30_1);
 //			System.out.println(doc.select(".librarylist"));
 //			System.out.println(doc.getElementsByClass("info").first().getElementsByTag("span").get(0).getElementsByTag("a").text());
 //			System.out.println(doc.getElementsByClass("info").first().getElementsByTag("span").get(1).getElementsByTag("a").text());
@@ -44,10 +44,10 @@ public class FirstStudy {
 //			System.out.println(doc.title());
 //		} catch (IOException e) {
 //			e.printStackTrace();
-//		}
-		Document doc = Jsoup.parse(BIWU_1);
-		System.out.println(doc.getElementById("nr").getElementsByTag("dt").get(0).getElementsByTag("a").get(0).getElementsByTag("img").attr("_src"));
-		System.out.println(doc.getElementById("nr").getElementsByClass("book_des").get(0).text());
+////		}
+//		Document doc = Jsoup.parse(BIWU_1);
+//		System.out.println(doc.getElementById("nr").getElementsByTag("dt").get(0).getElementsByTag("a").get(0).getElementsByTag("img").attr("_src"));
+//		System.out.println(doc.getElementById("nr").getElementsByClass("book_des").get(0).text());
 	}
 	private static final String SY30_1 = "<!doctype html>\n" +
 			"<html lang=\"zh-cmn-Hans\"> \n" +

@@ -1,0 +1,20 @@
+@startuml
+activate user #pink
+
+box "LiveData" #lightblue
+
+
+participant LiveData as ld<< (C,#ADD1B2)  >>
+participant ObserverWrapper as ow << (C,#ADD1B2)  >>
+participant Observer as o << (C,#ADD1B2)  >>
+
+end box
+user ->ld : 外部调用\nsetValue
+ld --> ld :dispatchingValue
+ld -> ow :considerNotify\n通知观察者
+ow -> o : 判断是否应该\n通知Observer
+o -->o : onChanged回调
+o -> user : 回调中的数据操作
+
+deactivate user
+@enduml
