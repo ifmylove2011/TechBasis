@@ -1,6 +1,8 @@
 package com.xter.threadpool;
 
+import java.net.Socket;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,12 +11,13 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ThreadPoolDemo {
 
 	public static void main(String[] args) {
 		Set<Integer> threadSet = new ConcurrentSkipListSet<>();
-
+		ReentrantLock lock = new ReentrantLock(true);
 		int n = 30;
 		Runnable[] tasks = new Runnable[n];
 		for (int i = 0; i < tasks.length; i++) {
@@ -28,13 +31,16 @@ public class ThreadPoolDemo {
 
 				@Override
 				public void run() {
-					int threadHashCode = Thread.currentThread().hashCode();
-					threadSet.add(threadHashCode);
-					System.out.println("threadHashCode = " + threadHashCode + ", task =" + taskExecutionFlag + ", threadSize :" + threadSet.size());
 					try {
+						lock.lock();
+						int threadHashCode = Thread.currentThread().hashCode();
+						threadSet.add(threadHashCode);
+						System.out.println("threadHashCode = " + threadHashCode + ", task =" + taskExecutionFlag + ", threadSize :" + threadSet.size());
 						Thread.sleep(500);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
+					} finally {
+						lock.unlock();
 					}
 				}
 			};
@@ -44,7 +50,7 @@ public class ThreadPoolDemo {
 	}
 
 	public static void testCustomThreadPool(Runnable[] tasks) {
-		ExecutorService executor = new ThreadPoolExecutor(1, 5, 20, TimeUnit.MILLISECONDS, new SynchronousQueue<>(), Executors.defaultThreadFactory(), new CustomRejectHandler());
+		ExecutorService executor = new ThreadPoolExecutor(2, 5, 20, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(3), Executors.defaultThreadFactory(), new CustomRejectHandler());
 		for (int i = 0; i < tasks.length; i++) {
 			executor.execute(tasks[i]);
 		}

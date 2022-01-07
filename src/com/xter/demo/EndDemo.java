@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class EndDemo {
 
 	public static void main(String[] args) {
+		System.out.println(Integer.parseInt("8003",16));
 
 //		Determiner determiner = new Determiner("task1");
 		Blocker blocker = new Blocker("task2");

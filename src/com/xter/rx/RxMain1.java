@@ -34,7 +34,7 @@ public class RxMain1 {
 //		useEmpty().subscribe(new SimpleStringObserver());
 //		useNever().subscribe(new SimpleStringObserver());
 //		useError().subscribe(new SimpleStringObserver());
-//		useJust().subscribe(new SimpleStringObserver());
+		useJust().subscribe(new SimpleStringObserver());
 //		useFromArray().subscribe(new SimpleStringObserver());
 //		useFromIterable().subscribe(new SimpleStringObserver());
 //

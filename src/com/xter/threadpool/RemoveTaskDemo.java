@@ -3,6 +3,8 @@ package com.xter.threadpool;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -15,8 +17,30 @@ import java.util.concurrent.TimeUnit;
 public class RemoveTaskDemo {
 
 	public static void main(String[] args) {
-		testNormalRemove();
+//		testNormalRemove();
 //		testInterrupt();
+		try {
+			testScheduleTask();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void testScheduleTask() throws InterruptedException {
+		ScheduledExecutorService ses =new  ScheduledThreadPoolExecutor(1);
+		ses.scheduleAtFixedRate(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("------1------");
+			}
+		},2,5,TimeUnit.SECONDS);
+		TimeUnit.SECONDS.sleep(10);
+		ses.scheduleAtFixedRate(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("------2------");
+			}
+		},2,5,TimeUnit.SECONDS);
 	}
 
 	private static void testNormalRemove() {

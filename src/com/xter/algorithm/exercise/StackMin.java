@@ -8,7 +8,7 @@ import java.util.Stack;
  * 创建时间: 2020/8/4
  * 描述:用O(1)的时间复杂度求栈中最小元素；
  */
-public class StackMin {
+public class  StackMin {
 
 	public static void main(String[] args) {
 		MinStack<Integer> minStack = new MinStack<>();

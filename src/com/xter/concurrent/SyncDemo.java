@@ -1,24 +1,64 @@
 package com.xter.concurrent;
 
+import com.xter.demo.InitDemo;
+
+import java.util.concurrent.TimeUnit;
+
 public class SyncDemo {
 	public static void main(String[] args) {
 
-		Item item = new Item();
-
+//		Item item = new Item();
+//
+//		for (int i = 0; i < 4; i++) {
+//			Thread testThread = new Thread(new TestRunnable(0, item), "thread-" + i);
+////			Thread testThread = new Thread(new TestRunnable(1, new Item()), "thread-" + i);
+//			testThread.start();
+////			if (i % 2 == 0) {
+////				Thread testThread = new Thread(new TestRunnable(6, new Item(), 4), "thread-" + i);
+////				testThread.start();
+////			} else {
+////				Thread testThread = new Thread(new TestRunnable(6, new Item(), 2), "thread-" + i);
+////				testThread.start();
+////			}
+//
+//		}
 		for (int i = 0; i < 4; i++) {
-			Thread testThread = new Thread(new TestRunnable(0, item), "thread-" + i);
-//			Thread testThread = new Thread(new TestRunnable(1, new Item()), "thread-" + i);
-			testThread.start();
-//			if (i % 2 == 0) {
-//				Thread testThread = new Thread(new TestRunnable(6, new Item(), 4), "thread-" + i);
-//				testThread.start();
-//			} else {
-//				Thread testThread = new Thread(new TestRunnable(6, new Item(), 2), "thread-" + i);
-//				testThread.start();
-//			}
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					Rhino rhino = new Rhino();
+//					rhino.setup();
+					rhino.close();
+				}
+			}).start();
+		}
+	}
 
+	static class Rhino {
+		private static Object target = new Object();
+
+		public void setup() {
+//			synchronized (InitDemo.class) {
+//			synchronized (this){
+			synchronized (target){
+//			synchronized (new Object()){
+				try {
+					System.out.println(this.hashCode()+","+System.currentTimeMillis());
+					TimeUnit.SECONDS.sleep(1);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
+		public synchronized void close(){
+			try {
+				System.out.println(System.currentTimeMillis());
+				TimeUnit.SECONDS.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 

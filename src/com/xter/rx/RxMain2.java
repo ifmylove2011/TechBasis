@@ -16,6 +16,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class RxMain2 {
 
@@ -637,20 +638,56 @@ public class RxMain2 {
 		Observable.create(new ObservableOnSubscribe<Integer>() {
 			@Override
 			public void subscribe(ObservableEmitter<Integer> observableEmitter) throws Exception {
+				TimeUnit.MILLISECONDS.sleep(200);
 				for (int i = 1; i < 7; i++) {
+					System.out.println(simpleTime() + " : emit->" + i);
 					observableEmitter.onNext(i);
 					TimeUnit.MILLISECONDS.sleep(300);
 				}
 				observableEmitter.onComplete();
 			}
-		}).throttleLast(400, TimeUnit.MILLISECONDS)
+		}).throttleFirst(700, TimeUnit.MILLISECONDS)
 				.subscribe(new Consumer<Integer>() {
 					@Override
 					public void accept(Integer num) throws Exception {
-						System.out.println(num);
+						System.out.println(simpleTime() + " : accept<-" + num);
 					}
 				});
 
+//		Observable<String> source = Observable.create(emitter -> {
+//			System.out.println(simpleTime()+" : emit->A");
+//			emitter.onNext("A");
+//
+//			Thread.sleep(1_500);
+//			System.out.println(simpleTime()+" : emit->B");
+//			emitter.onNext("B");
+//
+//			Thread.sleep(500);
+//			System.out.println(simpleTime()+" : emit->C");
+//			emitter.onNext("C");
+//
+//			Thread.sleep(250);
+//			System.out.println(simpleTime()+" : emit->D");
+//			emitter.onNext("D");
+//
+//			Thread.sleep(2_000);
+//			System.out.println(simpleTime()+" : emit->E");
+//			emitter.onNext("E");
+//			emitter.onComplete();
+//		});
+//
+//		source.subscribeOn(Schedulers.io())
+//				.debounce(1, TimeUnit.SECONDS)
+//				.blockingSubscribe(
+//						item -> System.out.println(simpleTime()+" : accept<-" + item),
+//						Throwable::printStackTrace,
+//						() -> System.out.println("onComplete"));
+	}
 
+	private static long simpleTime() {
+		long mills = System.currentTimeMillis();
+		double result = mills / 100;
+		long t = Math.round(result) * 100;
+		return t;
 	}
 }

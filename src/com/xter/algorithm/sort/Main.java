@@ -15,7 +15,7 @@ public class Main {
 //		ISortStrategy sortStrategy = new BubbleSort();
 //		ISortStrategy sortStrategy = new SelectSort();
 //		ISortStrategy sortStrategy = new InsertSort();
-//		ISortStrategy sortStrategy = new QuickSort();
+		ISortStrategy sortStrategy = new QuickSort();
 //		ISortStrategy sortStrategy = new ShellSort();
 //		ISortStrategy sortStrategy = new HeapSort();
 //		ISortStrategy sortStrategy = new MergeSort();

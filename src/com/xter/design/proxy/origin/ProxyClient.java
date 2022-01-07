@@ -12,4 +12,9 @@ public class ProxyClient implements IBusiness {
 	public void doSomeThing() {
 		client.doSomeThing();
 	}
+
+	@Override
+	public void doAnyThing() {
+		client.doAnyThing();
+	}
 }

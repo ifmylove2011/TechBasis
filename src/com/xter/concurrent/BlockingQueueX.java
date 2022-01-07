@@ -26,6 +26,7 @@ public class BlockingQueueX<T> {
 			while (list.size() == 0) {
 				conditionPop.await();
 			}
+			System.out.println("--signal--");
 			//此时可以取数据了，通知push可以继续添加了
 			conditionPush.signal();
 			return list.remove(0);

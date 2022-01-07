@@ -1,9 +1,11 @@
 package com.xter.activemq;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.command.BrokerInfo;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.jms.BytesMessage;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
@@ -22,24 +24,66 @@ public class OpenWireDemo {
 
 		try {
 			//new OpenWireDemo().testPublish();
-			new OpenWireDemo().testBuilderClient();
+			new OpenWireDemo().testOpenwireClient();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void testBuilderClient() throws JMSException, InterruptedException {
+	public void testOpenwireClient() {
 		OpenWireClient client = new OpenWireClient.Builder()
-				.url("tcp://localhost:61616")
-				.clientId("xter-desk")
+				.url("tcp://192.168.21.104:61616")
+				.username("xxx")
+				.password("dddddd")
+				.clientId("desk")
 				.build();
-		client.connect();
-		client.subscribe("xter","desk");
-		client.subscribe("xter","desk");
-		client.subscribe("xter","desk");
-		for (int i=0;i<10;i++){
-			client.publish("xter","message"+i);
-			TimeUnit.SECONDS.sleep(1);
+		//在连接前设定回调
+		client.setCallback(new OpenWireClient.OpenWireCallback() {
+			@Override
+			public void subscribeFinish(String topic) {
+				System.out.println("订阅完成, " + topic);
+			}
+
+			@Override
+			public void connectionCreated(BrokerInfo brokerInfo) {
+				System.out.println("连接成功, " + brokerInfo.toString());
+				try {
+					client.subscribe("xter", "xter", false);
+				} catch (JMSException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void messageArrived(String topic, Message message) throws Exception {
+				if (message instanceof TextMessage) {
+					//文字消息接收
+					TextMessage textMessage = (TextMessage) message;
+					//接收消息
+					String msg = textMessage.getText();
+					System.out.println("收到[" + topic + "]的消息, " + msg);
+				} else if (message instanceof BytesMessage) {
+					//字节消息接收
+					BytesMessage bytesMessage = (BytesMessage) message;
+					long len = bytesMessage.getBodyLength();
+					byte[] bytes = new byte[(int) len];
+					bytesMessage.readBytes(bytes);
+					String msg = new String(bytes);
+					System.out.println("收到[" + topic + "]的消息, " + msg);
+				}
+			}
+
+			@Override
+			public void onException(Exception ex) {
+				ex.printStackTrace();
+			}
+		});
+		try {
+			client.connect();
+			TimeUnit.SECONDS.sleep(20);
+			client.disconnect();
+		} catch (JMSException | InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 

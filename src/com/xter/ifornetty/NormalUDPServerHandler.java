@@ -4,6 +4,7 @@ import com.xter.util.L;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -15,6 +16,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.DatagramPacket;
 
 public class NormalUDPServerHandler extends ChannelInboundHandlerAdapter {
+
+
 
 	@Override
 	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
@@ -29,6 +32,10 @@ public class NormalUDPServerHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		L.d(ctx.channel().remoteAddress()+"");
+		for (int i = 0; i < 10; i++) {
+			ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer("我在广播" + i, Charset.forName("utf-8")), new InetSocketAddress("255.255.255.255", 10001)));
+			TimeUnit.SECONDS.sleep(3);
+		}
 	}
 
 	@Override

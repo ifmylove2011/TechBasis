@@ -10,7 +10,8 @@ public class QuickSort implements ISortStrategy {
 
 	@Override
 	public void sort(int[] origin) {
-		part(origin, 0, origin.length - 1);
+//		part(origin, 0, origin.length - 1);
+		part2(origin, 0, origin.length - 1);
 //		quick3sort(origin, 0, origin.length - 1);
 	}
 
@@ -24,6 +25,35 @@ public class QuickSort implements ISortStrategy {
 		System.out.println("index=" + index);
 		part(array, left, index - 1);
 		part(array, index + 1, right);
+	}
+
+	private void part2(int[] array,int left,int right){
+		if(left>right){
+			return;
+		}
+		int i = left;
+		int j= right;
+		int temp = array[left];
+		while (i!=j){
+			while (array[j]>=temp&&i<j){
+				j--;
+			}
+			while (array[i]<=temp&&i<j){
+				i++;
+			}
+			if(i<j){
+				int t = array[i];
+				array[i] = array[j];
+				array[j] = t;
+			}
+			System.out.println(Arrays.toString(array));
+		}
+		array[left] = array[i];
+		array[i] = temp;
+		System.out.println(Arrays.toString(array));
+		System.out.println("-------------");
+		part2(array,left,i-1);
+		part2(array,i+1,right);
 	}
 
 	private int partition(int[] array, int left, int right) {
@@ -48,7 +78,7 @@ public class QuickSort implements ISortStrategy {
 		int temp = array[pivot];
 		array[pivot] = array[index - 1];
 		array[index - 1] = temp;
-		System.out.println("exch-:" + array[pivot] + "," + array[index - 1]);
+		System.out.println("exch--:" + array[pivot] + "," + array[index - 1]);
 		System.out.println(Arrays.toString(array));
 
 		return index - 1;
