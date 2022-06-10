@@ -8,8 +8,8 @@ public class DynamicProxyHandler implements InvocationHandler {
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		System.out.println(method.getName());
-		System.out.println(Arrays.toString(args));
+//		System.out.println(method.getName());
+//		System.out.println(Arrays.toString(args));
 		return null;
 	}
 }

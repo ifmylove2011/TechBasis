@@ -17,7 +17,7 @@ public class Main {
 		IBusiness proxyClient = (IBusiness) Proxy.newProxyInstance(clazz.getClassLoader(), clazz.getInterfaces(), new DynamicProxyHandler());
 //		ProxyClient proxyClient = (ProxyClient) Proxy.newProxyInstance(client.getClass().getClassLoader(), client.getClass().getInterfaces(), new DynamicProxyHandler(client));
 //		Client proxyClient = (Client) Proxy.newProxyInstance(client.getClass().getClassLoader(), client.getClass().getInterfaces(), new DynamicProxyHandler(client));
-		proxyClient.doSomeThing();
-		proxyClient.doAnyThing();
+		proxyClient.doSomeThing(2,3);
+		proxyClient.doAnyThing("haha");
 	}
 }

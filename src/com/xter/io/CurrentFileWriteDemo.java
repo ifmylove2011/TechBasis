@@ -1,5 +1,7 @@
 package com.xter.io;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.locks.ReentrantLock;
@@ -11,17 +13,22 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class CurrentFileWriteDemo {
 
-	public static void main(String[] args) {
-		for (int i = 0; i < 10; i++) {
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					for (int j = 0; j < 50000; j++) {
-						LogFileWriter.getInstance().write(System.currentTimeMillis() + "---------" + Thread.currentThread().getName() + "------" + j + "\r\n");
-					}
-				}
-			}).start();
-		}
+	public static void main(String[] args) throws IOException {
+		FileOperator.copyfile("E:\\studying\\StudioProjects\\TechBasis\\src\\com\\xter\\design\\proxy\\DBM.java","E:\\study\\ssss\\11");
+//		System.out.println(dir.isDirectory());
+//		System.out.println(dir.getName());
+//		System.out.println(dir.getPath());
+//		System.out.println(dir.getAbsolutePath());
+//		for (int i = 0; i < 10; i++) {
+//			new Thread(new Runnable() {
+//				@Override
+//				public void run() {
+//					for (int j = 0; j < 50000; j++) {
+//						LogFileWriter.getInstance().write(System.currentTimeMillis() + "---------" + Thread.currentThread().getName() + "------" + j + "\r\n");
+//					}
+//				}
+//			}).start();
+//		}
 
 //		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 //		try {

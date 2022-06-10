@@ -9,12 +9,13 @@ public class ProxyClient implements IBusiness {
 	}
 
 	@Override
-	public void doSomeThing() {
-		client.doSomeThing();
+	public void doSomeThing(int code1, int code2) {
+		System.out.println("code1="+code1+",code2="+code2);
 	}
 
 	@Override
-	public void doAnyThing() {
-		client.doAnyThing();
+	public void doAnyThing(String result) {
+		System.out.println("result="+result);
+
 	}
 }
