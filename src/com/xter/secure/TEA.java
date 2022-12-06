@@ -49,7 +49,7 @@ public class TEA {
 	private static byte[] decrypt(byte[] encryptContent, long[] key, int times) {
 		long[] pendingData = byte2longArray(encryptContent);
 		long y = pendingData[0], z = pendingData[1];
-		long sum = DELTA*32;
+		long sum = DELTA * times;
 		long key1 = key[0], key2 = key[1], key3 = key[2], key4 = key[3];
 
 		for (int i = 0; i < times; i++) {
@@ -70,6 +70,7 @@ public class TEA {
 
 	/**
 	 * 去掉long整形的高32位
+	 *
 	 * @param num 一个可能超出32位有效值的数值
 	 * @return 32位有效位的数值
 	 */
@@ -80,8 +81,9 @@ public class TEA {
 	/**
 	 * 分割byte数组，传n组长度数值，就分为n组；
 	 * 如传入[4,8]，则原数组分为一个4byte的数组与8byte的数组
+	 *
 	 * @param srcBytes 原数据
-	 * @param lens 长度数组
+	 * @param lens     长度数组
 	 * @return byte数组
 	 */
 	private static byte[][] splitBytes(byte[] srcBytes, int... lens) {
@@ -91,7 +93,7 @@ public class TEA {
 			int len = lens[i];
 			bytess[i] = new byte[len];
 			System.arraycopy(srcBytes, index, bytess[i], 0, len);
-			index +=lens[i];
+			index += lens[i];
 		}
 		return bytess;
 	}
@@ -124,6 +126,7 @@ public class TEA {
 
 	/**
 	 * 将两个数组拼装成一个
+	 *
 	 * @param bytesArray byte数据
 	 * @return byte[]
 	 */
@@ -143,8 +146,9 @@ public class TEA {
 
 	/**
 	 * byte[]转长整
+	 *
 	 * @param bytes 数据
-	 * @return  长整
+	 * @return 长整
 	 */
 	private static long bytesToLong(byte[] bytes) {
 		long longNum = 0;
@@ -162,6 +166,7 @@ public class TEA {
 
 	/**
 	 * 长整转byte[]
+	 *
 	 * @param num 长整
 	 * @param len byte长度
 	 * @return byte数组
