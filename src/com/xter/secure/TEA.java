@@ -49,7 +49,7 @@ public class TEA {
 	private static byte[] decrypt(byte[] encryptContent, long[] key, int times) {
 		long[] pendingData = byte2longArray(encryptContent);
 		long y = pendingData[0], z = pendingData[1];
-		long sum = 0x13df82de;
+		long sum = DELTA*32;
 		long key1 = key[0], key2 = key[1], key3 = key[2], key4 = key[3];
 
 		for (int i = 0; i < times; i++) {

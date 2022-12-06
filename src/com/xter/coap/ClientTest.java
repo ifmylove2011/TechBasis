@@ -37,22 +37,15 @@ public class ClientTest {
 		}, "{\"deviceMac\":\"ddddddddd\",\"deviceType\":\"ddddddddd\"}", MediaTypeRegistry.APPLICATION_JSON);
 	}
 
-	private static void broadcast(int port, String path, String content) {
+	private static void broadcast(int port, String path, String content,MessageObserverAdapter observerAdapter) {
 		Inet4Address broadcastAddress = NetworkInterfacesUtil.getBroadcastIpv4();
 		String url = String.format(Locale.CHINA, "coap://%s:%d%s", broadcastAddress.getHostAddress(), port, path);
 
 		Request request = new Request(CoAP.Code.POST, CoAP.Type.NON);
 		request.setURI(url);
 		request.setPayload(content);
-		request.setDestinationContext(new AddressEndpointContext(broadcastAddress, port));
 
-		request.addMessageObserver(new MessageObserverAdapter() {
-			@Override
-			public void onResponse(Response response) {
-				System.out.println(response.toString());
-				System.out.println(response.getPayloadString());
-			}
-		});
+		request.addMessageObserver(observerAdapter);
 		request.send();
 	}
 }

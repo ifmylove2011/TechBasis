@@ -11,7 +11,11 @@ public class TEADemo {
 
 		byte[] bytes = toHexBytes("0123456789abcdef");
 
-		System.out.println(bytesToHexString(TEA.encryptByTea(bytes,key,32)));
+
+		byte[] enResult = TEA.encryptByTea(bytes,key,32);
+		System.out.println(bytesToHexString(enResult));
+		byte[] deResult = TEA.decryteByTea(enResult,key,32);
+		System.out.println(bytesToHexString(deResult));
 	}
 
 	public static String bytesToHexString(byte[] bytes) {
