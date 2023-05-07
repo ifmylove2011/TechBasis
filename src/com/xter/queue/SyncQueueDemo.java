@@ -44,46 +44,48 @@ public class SyncQueueDemo {
 			@Override
 			public void run() {
 				for (int i = 0; i < 30; i++) {
+					System.out.println("------"+i);
 					TaskDelayer.get().throttleLastestTask("1", task1);
-					try {
-						TimeUnit.MILLISECONDS.sleep(200);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+//					try {
+//						TimeUnit.MILLISECONDS.sleep(200);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
 				}
 			}
 		}).start();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				for (int i = 0; i <1; i++) {
-					TaskDelayer.get().throttleLastestTask("2", task2);
-					try {
-						TimeUnit.MILLISECONDS.sleep(500);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}).start();
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					TimeUnit.SECONDS.sleep(10);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 				for (int i = 0; i <10; i++) {
+					System.out.println("+++++++++"+i);
 					TaskDelayer.get().throttleLastestTask("2", task2);
-					try {
-						TimeUnit.MILLISECONDS.sleep(500);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+//					try {
+//						TimeUnit.MILLISECONDS.sleep(500);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
 				}
 			}
 		}).start();
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				try {
+//					TimeUnit.SECONDS.sleep(10);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//				for (int i = 0; i <10; i++) {
+//					TaskDelayer.get().throttleLastestTask("2", task2);
+//					try {
+//						TimeUnit.MILLISECONDS.sleep(500);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//		}).start();
 	}
 
 	public static void testSyncQueue() {

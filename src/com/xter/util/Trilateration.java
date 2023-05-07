@@ -22,7 +22,7 @@ public class Trilateration {
 	static final int TRIL_4SPHERES = 4;
 
 	/* Largest nonnegative number still considered zero */
-	static final double MAXZERO = 0.001;
+	static final double MAXZERO = 0.01;
 
 	static final int ERR_TRIL_CONCENTRIC = -1;
 	static final int ERR_TRIL_COLINEAR_2SOLUTIONS = -2;
@@ -651,7 +651,7 @@ public class Trilateration {
 		else return trilateration_mode34;
 	}
 
-	int GetLocation(Vec3d best_solution, int use4thAnchor, Vec3d[] anchorArray, int[] distanceArray) {
+	public int GetLocation(Vec3d best_solution, int use4thAnchor, Vec3d[] anchorArray, int[] distanceArray) {
 		Vec3d o1 = new Vec3d(), o2 = new Vec3d(), p1 = new Vec3d(), p2 = new Vec3d(), p3 = new Vec3d(), p4 = new Vec3d();
 		double r1 = 0, r2 = 0, r3 = 0, r4 = 0, best_3derror = 0, best_gdoprate = 0;
 		int result;
@@ -775,8 +775,8 @@ public class Trilateration {
 		List<int[]> data = getDataFromFile();
 		for (int[] d : data) {
 			result = trilateration.GetLocation(report, 0, anchorArray, d);
-//			System.out.println(result);
-			System.out.println(report);
+			System.out.println(result);
+			System.out.println("report:"+report);
 			System.out.println();
 		}
 	}
@@ -823,14 +823,14 @@ public class Trilateration {
 		public double value;
 	}
 
-	static class Vec3d {
+	public static class Vec3d {
 		public double x;
 		public double y;
 		public double z;
 
 		@Override
 		public String toString() {
-			return String.format("x=%.3f,y=%.3f,z=%.3f", x, y, z);
+			return String.format("[x=%.3f,y=%.3f,z=%.3f]", x, y, z);
 		}
 	}
 }

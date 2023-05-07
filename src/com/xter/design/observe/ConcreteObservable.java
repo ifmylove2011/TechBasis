@@ -24,6 +24,5 @@ public class ConcreteObservable implements IObservable {
 			IObserver observer = (IObserver)var2.next();
 			observer.update(content);
 		}
-
 	}
 }

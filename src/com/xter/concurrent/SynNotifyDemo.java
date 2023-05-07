@@ -7,8 +7,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class SynNotifyDemo {
 	public static void main(String[] args) {
 //		test1();
-//		test2();
-		test3();
+		test2();
+//		test3();
 	}
 
 	public static void test1(){
@@ -59,7 +59,7 @@ public class SynNotifyDemo {
 
 		while (true){
 			try {
-				TimeUnit.SECONDS.sleep(2);
+//				TimeUnit.SECONDS.sleep(2);
 				String item = blockingQueue.take();
 				System.out.println(item);
 			} catch (InterruptedException e) {

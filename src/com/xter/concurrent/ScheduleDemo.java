@@ -20,8 +20,8 @@ import java.util.concurrent.TimeoutException;
  */
 public class ScheduleDemo {
 	public static void main(String[] args) throws InterruptedException {
-//		testRemove2();
-		testScheduleTimeout();
+		testRemove2();
+//		testScheduleTimeout();
 	}
 
 	/**
@@ -47,6 +47,7 @@ public class ScheduleDemo {
 		Runnable runnable = new Task();
 		ScheduledThreadPoolExecutor scheduledExecutorService = new ScheduledThreadPoolExecutor(2);
 		RunnableScheduledFuture<?> task1 = (RunnableScheduledFuture<?>) scheduledExecutorService.scheduleWithFixedDelay(runnable, 0, 1, TimeUnit.SECONDS);
+		System.out.println(scheduledExecutorService.getActiveCount());
 		TimeUnit.SECONDS.sleep(5);
 		System.out.println("start");
 		System.out.println(scheduledExecutorService.remove(task1));

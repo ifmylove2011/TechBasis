@@ -12,7 +12,7 @@ import io.netty.buffer.ByteBufUtil;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 //		System.out.println("Hi Tech Company");
 //
 //		System.out.println(isSuccess());
@@ -22,33 +22,49 @@ public class Main {
 //		System.out.println(isPowerOfTwo(8));
 //
 //		System.out.println(5+2<<2);
-		int value = Integer.parseInt("14");
-		System.out.println(value);
-		Integer a = 1000, b = 1000;
-		System.out.println(a == b);
-		Integer c = 100, d = 100;
-		System.out.println(c == d);
+//		int value = Integer.parseInt("14");
+//		System.out.println(value);
+//		Integer a = 1000, b = 1000;
+//		System.out.println(a == b);
+//		Integer c = 100, d = 100;
+//		System.out.println(c == d);
+//
+//		System.out.println(0x0001 ^ 0x0020);
+//		System.out.println(0x0001 & 0x0020);
+//		System.out.println(0x0001 | 0x0020);
+//		System.out.println(0x0001 | 0x0020);
+//
+//		byte[] bytes = new byte[2];
+//		bytes[0] = 1;
+//		bytes[1] = 2;
+////		System.out.println(Arrays.toString(reverse(bytes)));
+//
+//		System.out.println(bytesToHexString(bytes));
+//		System.out.println(bytesToHexString(transmute(bytes)));
+//
+//		byte head = 0;
+//
+//		ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+//		byteBuffer.get(head);
+//
+//		System.out.println(byteBuffer.array().length);
+		C c = new C();
+		c.start();
+//		c.join();
+		System.out.println("main end");
+	}
 
-		System.out.println(0x0001 ^ 0x0020);
-		System.out.println(0x0001 & 0x0020);
-		System.out.println(0x0001 | 0x0020);
-		System.out.println(0x0001 | 0x0020);
-
-		byte[] bytes = new byte[2];
-		bytes[0] = 1;
-		bytes[1] = 2;
-//		System.out.println(Arrays.toString(reverse(bytes)));
-
-		System.out.println(bytesToHexString(bytes));
-		System.out.println(bytesToHexString(transmute(bytes)));
-
-		byte head = 0;
-
-		ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
-		byteBuffer.get(head);
-
-		System.out.println(byteBuffer.array().length);
-
+	static class C extends Thread{
+		@Override
+		public void run() {
+			try {
+				System.out.println("child start");
+				sleep(2000);
+				System.out.println("child end");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static byte[] reverse(byte[] bytes){
