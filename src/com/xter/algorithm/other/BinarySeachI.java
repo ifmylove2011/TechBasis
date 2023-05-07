@@ -9,8 +9,10 @@ import java.util.Collections;
  */
 public class BinarySeachI {
 
+	static final int size = 100;
+	static final float offset = 1.2f;
+
 	public static void main(String[] args) {
-		int size = 100;
 		int[] array = new int[size];
 		for (int i = 0; i < size; i++) {
 			array[i] = i + 20;

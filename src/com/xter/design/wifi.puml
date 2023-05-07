@@ -1,0 +1,18 @@
+@startuml
+activate user #pink
+
+box "Wifi" #lightblue
+
+participant ClientModeImpl as CMI<< (C,#ADD1B2)  >>
+participant WifiInjector as WI << (C,#ADD1B2)  >>
+participant WifiNetworkAgent as WNA << (C,#ADD1B2)  >>
+
+end box
+user -> CMI : 连接wifi
+CMI -> WI : 连接成功后\n创建代理
+WI -> WNA : makeWifiNetworkAgent
+WNA --> WNA : register()
+WNA -> CMI : 获取代理
+
+deactivate user
+@enduml
