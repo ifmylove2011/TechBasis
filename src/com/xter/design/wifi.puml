@@ -1,4 +1,13 @@
 @startuml
+skinparam roundcorner 12
+skinparam sequence {
+	ParticipantFontName 迷你简准圆
+	ParticipantFontSize 16
+    ArrowThickness 1.1
+
+    ArrowFontName 迷你简准圆
+    ArrowFontSize 15
+}
 activate user #pink
 
 box "Wifi" #lightblue
@@ -8,11 +17,81 @@ participant WifiInjector as WI << (C,#ADD1B2)  >>
 participant WifiNetworkAgent as WNA << (C,#ADD1B2)  >>
 
 end box
+
+box "NetworkStack" #66CCCC
+
+participant NetworkStackService as NSS<< (C,#ADD1B2)  >>
+participant NetworkMonitor as NM<< (C,#ADD1B2)  >>
+participant EvaluationState  as ES<< (C,#ADD1B2)  >>
+end box
+
+box "Connectivity" #87B4B4
+participant NetworkAgent as NA<< (C,#ADD1B2)  >>
+participant ConnectivityManager as CM<< (C,#ADD1B2)  >>
+participant ConnectivityService as CS<< (C,#ADD1B2)  >>
+participant NetworkMonitorCallbacks as NMC<< (C,#ADD1B2)  >>
+participant NetworkAgentInfo  as NAI<< (C,#ADD1B2)  >>
+participant InternalHandler  as IH<< (C,#ADD1B2)  >>
+participant NetworkStateTrackerHandler  as NSTH<< (C,#ADD1B2)  >>
+participant NetworkNotificationManager  as NNM<< (C,#ADD1B2)  >>
+
+note over NMC #lightblue: ConnectivityService内部类
+/ note over IH #lightblue: ConnectivityService内部类
+/ note over NSTH #lightblue: ConnectivityService内部类
+/ note over NM #yellow: 状态机
+/ note over CMI #yellow: 状态机
+/ note over ES #lightblue: NetworkMonitor内部类\n但并非状态类
+end box
 user -> CMI : 连接wifi
 CMI -> WI : 连接成功后\n创建代理
 WI -> WNA : makeWifiNetworkAgent
-WNA --> WNA : register()
-WNA -> CMI : 获取代理
+WNA --> WNA :构造方法
+WNA -[#red]->> NA : 调用父类register()
+WNA --> CMI : 获取代理
 
+NA -> CM : registerNetworkAgent
+CM -> CS : registerNetworkAgent
+activate CS #blue
+CS -[#red]-> CS : registerNetworkAgentInternal
+CS -> NAI : 获取NetworkAgentInfo
+NAI --> NAI : 构造方法
+NAI --> CS : 获取NetworkAgentInfo
+CS -> NMC : 获取NetworkMonitorCallbacks
+NMC --> NMC : 带NetworkAgentInfo参数\n的构造方法
+NMC --> CS : 获取NetworkMonitorCallbacks
+
+
+CS ->> NSS : 创建NetworkMonitor
+NSS -> NM : makeNetworkMonitor
+NM --> NM : 构造方法
+activate NM #blue
+NM --> NM : 进入初始状态\nDefaultState
+NM --> NM : 网络连接成功后\n进入评估状态\nEvaluatingState
+NM --> NM : 评估时直接转进为\n嗅探状态\nProbingState
+NM -> ES : 嗅探成功后得到\nCaptivePortalProbeResult
+ES -> NM : 评估上报\nreportEvaluationResult
+NM --> NM : 触发notifyNetworkTested
+NM ->> NMC : 触发回调notifyNetworkTestedWithExtras
+NMC -> NSTH : 发送EVENT_NETWORK_TESTED
+activate NSTH #blue
+NSTH -> CS : 调用handleNetworkTested
+note over CS : 如果handleNetworkTested先一步调用\n会删除下方InternalHandler中的\nEVENT_PROMPT_UNVALIDATED消息
+CS --> CS : 调用handlePromptUnvalidated
+CS -[#red]> NNM : 调用showNetworkNotification显示通知
+NM --> NSS : 获取NetworkMonitor
+deactivate NM
+NSS ->> NMC : 创建NetworkMonitor成功\n并直接回调onNetworkMonitorCreated
+NMC -> IH : 发送EVENT_REGISTER_NETWORK_AGENT
+activate IH #blue
+IH -> CS : 触发handleRegisterNetworkAgent
+CS --> CS : 调用updateNetworkInfo
+CS -> IH : 调用scheduleUnvalidatedPrompt\n延时8秒发送EVENT_PROMPT_UNVALIDATED
+IH -> CS : 触发handlePromptUnvalidated
+deactivate IH
+note over NSTH : 表示两个Handler具有类似的作用
+deactivate NSTH
+CS -[#red]> NNM : 调用showNetworkNotification显示通知
+deactivate CS
+NNM ->> user : showNotification\n使通知栏显示网络状态信息
 deactivate user
 @enduml
