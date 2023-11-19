@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  */
 public class Main {
 	public static void main(String[] args) {
-//		int[] origin = {5, 3, 2, 12, 7, 1, 0, 13, 7, 9};
+		int[] origin = {5, 3, 2, 12, 7, 1, 0, 13, 7, 9};
 //		ISortStrategy sortStrategy = new BubbleSort();
 //		ISortStrategy sortStrategy = new SelectSort();
 //		ISortStrategy sortStrategy = new InsertSort();
@@ -19,14 +19,14 @@ public class Main {
 //		ISortStrategy sortStrategy = new ShellSort();
 //		ISortStrategy sortStrategy = new HeapSort();
 //		ISortStrategy sortStrategy = new MergeSort();
-//		sortStrategy.sort(origin);
-//		System.out.println(Arrays.toString(origin));
+		sortStrategy.sort(origin);
+		System.out.println(Arrays.toString(origin));
 //		Stack<String> stack = getStack();
 //		System.out.println(stack);
 //		move(stack, null);
 //		System.out.println(stack);
-		String host = "/192.168.21.105:14000";
-		System.out.println(host.substring(1,host.indexOf(":")));
+//		String host = "/192.168.21.105:14000";
+//		System.out.println(host.substring(1,host.indexOf(":")));
 	}
 
 	private static void reverse(Stack<String> stack) {

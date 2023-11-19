@@ -28,6 +28,7 @@ public class QuickSort implements ISortStrategy {
 	}
 
 	private void part2(int[] array,int left,int right){
+		System.out.println("left="+left+",right="+right);
 		if(left>right){
 			return;
 		}
@@ -46,6 +47,7 @@ public class QuickSort implements ISortStrategy {
 				array[i] = array[j];
 				array[j] = t;
 			}
+			System.out.println("i="+i+",j="+j);
 			System.out.println(Arrays.toString(array));
 		}
 		array[left] = array[i];
