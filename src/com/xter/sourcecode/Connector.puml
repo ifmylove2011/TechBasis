@@ -1,0 +1,75 @@
+@startuml
+
+skinparam sequence {
+    ParticipantFontName 迷你简准圆
+    ParticipantFontSize 16
+    ArrowFontName 迷你简准圆
+    ArrowFontSize 14
+}
+
+box "Connector" #lightblue
+participant NioSocketConnector << (C,#ADD1B2) >>
+participant AbstractPollingIoConnector << (C,#ADD1B2) >>
+participant AbstractIoConnector << (C,#ADD1B2) >>
+participant AbstractIoService << (C,#ADD1B2) >>
+end box
+
+box "Session" #lightgrey
+participant NioSocketSession << (C,#ADD1B2) >>
+participant NioSession << (C,#ADD1B2) >>
+participant AbstractIoSession << (C,#ADD1B2) >>
+end box
+
+box "Processor" #lightgreen
+participant NioProcessor << (C,#ADD1B2) >>
+participant AbstractPollingIoProcessor << (C,#ADD1B2) >>
+participant Processor << (C,#ADD1B2) >>
+note over Processor:属于AbstractPollingIoProcessor\n内部的一个Runnable
+end box
+
+activate NioSocketConnector #pink
+NioSocketConnector --> NioProcessor :创建实例时即创建了属于自己的NioProcessor，初始化Selector
+
+NioProcessor --> AbstractPollingIoProcessor :调用父类构造方法初始化线程
+
+NioSocketConnector --> AbstractIoConnector :调用抽象connect方法
+
+AbstractIoConnector --> AbstractPollingIoConnector :调用子类connect0方法
+
+AbstractPollingIoConnector --> NioSocketConnector :调用子类connect方法判断是否成功
+
+NioSocketConnector --> AbstractPollingIoConnector :连接成功
+
+AbstractPollingIoConnector --> NioSocketConnector :调用子类newSession创建session
+
+NioSocketConnector --> NioSocketSession :创建session
+
+NioSocketSession --> NioSession : 调用父类构造方法\n新建默认的\nDefaultIoFilterChain
+
+NioSession --> AbstractIoSession : 调用父类构造方法\n初始化各种时间值\n与sessionId
+
+NioSocketSession --> AbstractPollingIoConnector : 得到新的session
+deactivate NioSocketConnector
+
+AbstractPollingIoConnector --> AbstractIoService : 调用initSession初始化各种Attribute
+
+AbstractPollingIoConnector --> AbstractPollingIoProcessor : 调用session所属的processor的add方法将session添入维护队列
+
+AbstractPollingIoProcessor --> Processor : 调用startupProcessor方法\n启动线程
+
+activate Processor #pink
+Processor --> Processor : 一直运行刷新当前时间并\n调用notifyIdleSessions方法
+
+Processor --> AbstractIoSession : 如果较上次记录的时间大于1000ms，\n则调用AbstractIoSession的notifyIdleness静态方法
+deactivate Processor
+
+activate AbstractIoSession #pink
+AbstractIoSession --> AbstractIoSession : notifyIdleSession\n检查各种状态
+
+AbstractIoSession --> AbstractIoSession : notifyIdleSession0\n检查特定状态是否\n已经被触发
+deactivate AbstractIoSession
+
+AbstractIoSession -> NioSession: 触发FilterChain中所有\n的sessionIdle
+
+
+@enduml

@@ -1,0 +1,50 @@
+@startuml
+actor user #pink
+
+box "PackageInstaller" #lightblue
+
+participant InstallStart as IS<< (C,#ADD1B2)  >>
+participant PackageInstallerActivity as PIA << (C,#ADD1B2)  >>
+participant InstallInstalling as IIling << (C,#ADD1B2)  >>
+participant InstallingAsyncTask as IAT << (C,#ADD1B2)  >>
+
+end box
+box "PMS" #lightgrey
+participant PMS << (C,#FFEEDD)  >>
+end box
+user -> IS : 点击安装包\n跳转应用
+activate IS #pink
+IS -> PIA :onCreate
+deactivate IS
+activate PIA #pink
+PIA ->> PIA : onCreate
+PIA ->> PIA : onResume
+PIA ->> PIA : 展示安装询问页面\nbindUi
+PIA ->> PIA : checkIfAllowedAndInitiateInstall
+PIA ->> PIA : 初始化安装信息\ninitiateInstall
+PIA ->> PIA : 确认可安装\nstartInstallConfirm
+user -> PIA : 点击安装
+PIA -> IIling : startInstall
+deactivate PIA
+activate IIling #pink
+IIling ->> IIling : onCreate
+IIling ->> IIling : onResume
+IIling -->> IAT : 创建异步任务并执行
+activate IAT #pink
+IAT ->> IAT : doInBackground
+PMS -[#purple]>> IAT : 获取PackageInstaller.Session
+IAT ->> IAT : onPostExecute
+IAT -> PMS : session.commit
+deactivate IAT
+PMS --> IIling : 安装完成
+IIling ->> IIling : launchFinishBasedOnResult
+skinparam sequenceMessageAlign center
+IIling --> user : 根据结果跳转\nInstallSuccess或InstallFailed界面
+deactivate IIling
+
+
+
+
+
+deactivate user
+@enduml

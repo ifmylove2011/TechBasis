@@ -96,7 +96,7 @@ public class Momo {
 
     private void momoTest() throws IOException {
 
-        Document document = Jsoup.parse(new File("I:\\360Downloads\\momo.html"));
+        Document document = Jsoup.parse(new File("I:\\360Downloads\\momo.html"),"utf-8");
 
         Elements tagArticles = document.select("article");
 //                System.out.println(tagArticles.html());

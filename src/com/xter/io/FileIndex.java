@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * @author XTER
@@ -61,18 +62,20 @@ public class FileIndex {
 	private static void checkClear() {
 		File logDir = new File("E:\\studying\\log\\");
 
-		final String filePrefix = DATE_FORMAT.format(System.currentTimeMillis()-7*24*3600*1000);
+		final String filePrefix = DATE_FORMAT.format(System.currentTimeMillis()-14*24*3600*1000);
+		System.out.println(filePrefix);
 		File[] all = logDir.listFiles();
-		for(File f:all){
-			System.out.println("file:"+f.getName()+",size:"+f.length());
-		}
+//		for(File f:all){
+//			System.out.println("file:"+f.getName()+",size:"+f.length());
+//		}
 		File[] files = logDir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				System.out.println("file:"+dir.getName()+",size:"+dir.length());
-				if (name.compareTo(filePrefix)<0)
-					return true;
-				return false;
+//				System.out.println("file:"+dir.getName()+",size:"+dir.length());
+				System.out.println(name);
+//				if (name.compareTo(filePrefix)<0)
+//					return true;
+				return name.compareTo(filePrefix)<0|| !Pattern.matches("\\d{8}_\\d{2}.log",name);
 			}
 		});
 //		String[] fileNames = logDir.list(new FilenameFilter() {
@@ -83,7 +86,7 @@ public class FileIndex {
 //				return false;
 //			}
 //		});
-		deleteFiles(files);
+//		deleteFiles(files);
 		System.out.println(Arrays.toString(files));
 	}
 

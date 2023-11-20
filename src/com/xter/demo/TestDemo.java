@@ -13,8 +13,40 @@ import java.util.concurrent.TimeUnit;
 public class TestDemo {
 
 	public static void main(String[] args) {
-		testShake();
+//		testShake();
 //		testShakeS();
+//		testAnd();
+		testBool();
+	}
+
+	public static void testBool(){
+//		System.out.println(false&&true||true);
+//		System.out.println(true&&(false||true));
+		if(test111()&&test222()||test333()){
+			System.out.println("--------");
+		}
+	}
+
+	private static boolean test111(){
+		System.out.println("111");
+		return false;
+	}
+
+	private static boolean test222(){
+		System.out.println("222");
+		return true;
+	}
+
+	private static boolean test333(){
+		System.out.println("333");
+		return false;
+	}
+
+	public static void testAnd(){
+		int testResult = 2;
+		int NETWORK_VALIDATION_RESULT_PARTIAL = 0x02;
+		boolean partial = ((testResult & NETWORK_VALIDATION_RESULT_PARTIAL) != 0);
+		System.out.println(partial);
 	}
 
 	public static void testShake() {

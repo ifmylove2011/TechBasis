@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author XTER
@@ -13,7 +14,7 @@ import java.io.IOException;
  */
 public class FileOperator {
 
-	public static void copyfile(String url1, String url2) throws IOException {
+	public static void copyfile(String url1, String url2) throws IOException, InterruptedException {
 		File srcF = new File(url1);
 		if (!srcF.exists()) {
 			return;
@@ -37,17 +38,23 @@ public class FileOperator {
 			}
 
 			FileInputStream fis = new FileInputStream(srcF);
+			System.out.println("src1:"+fis.available());
 			BufferedInputStream bis = new BufferedInputStream(fis);
+			System.out.println("buf1:"+bis.available());
 
 			FileOutputStream fos = new FileOutputStream(dstUrl);
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
 
 			int len = 0;
+			TimeUnit.SECONDS.sleep(2);
+			System.out.println("buf2:"+bis.available());
 			while ((len = bis.read()) != -1) {
 				bos.write(len);
 			}
 			bis.close();
 			bos.close();
+			System.out.println("src2:"+srcF.length());
+			System.out.println("dst2:"+dstF.length());
 			return;
 		}
 		//src为目录时，dst不可为文件，无论时否有目录符，均需自动转换为目录
@@ -91,4 +98,23 @@ public class FileOperator {
 		output.close();
 		input.close();
 	}
+
+	public synchronized static void createFile(String path) throws IOException {
+		if (path ==null || path.length()==0) {
+			return;
+		}
+		File file = new File(path);
+		if (!file.exists())
+			if (path.endsWith("/")) {
+				file.mkdirs();
+			} else {
+				if (file.getParentFile().exists()) {
+					file.createNewFile();
+				} else {
+					file.getParentFile().mkdirs();
+					file.createNewFile();
+				}
+			}
+	}
+
 }
