@@ -329,7 +329,7 @@
         <dependency>
             <groupId>org.eclipse.californium</groupId>
             <artifactId>scandium</artifactId>
-            <version>3.5.0</version>
+            <version>3.7.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava -->
